@@ -51,11 +51,15 @@ The quantum suicide thought experiment (Tegmark, 1998; extended from the quantum
 
 This is not a violation of probability. The Born rule is satisfied in every branch. In the |0⟩ branch, the observer is dead with the correct probability. The effect is purely about which branch the observer finds itself in — a question about indexical facts (Lewis, 1979) rather than physical laws.
 
+It should be noted that Tegmark himself has expressed skepticism about quantum immortality as a consequence of this thought experiment, and does not endorse it as a prediction of the many-worlds interpretation. The thought experiment is presented here as an open conceptual question, not as an established result.
+
 ### 2.2 The self-locating uncertainty problem
 
 The quantum suicide argument depends on unresolved questions about probability in the many-worlds interpretation. The Born rule tells us the amplitude-squared probability of each branch, but the question of "which branch am I in?" is a question about self-locating uncertainty (Bostrom, 2002) that the bare formalism does not answer.
 
-Several proposals exist: the Deutsch-Wallace decision-theoretic approach (Deutsch, 1999; Wallace, 2012), which derives the Born rule from rational decision-making constraints; the Sebens-Carroll self-locating uncertainty approach (Sebens & Carroll, 2018), which uses epistemic separability to ground branch probabilities; and various approaches based on branch counting or typicality (Page, 2009; Aguirre & Tegmark, 2011). None is universally accepted. The problem remains open.
+Several proposals exist: the Deutsch-Wallace decision-theoretic approach (Deutsch, 1999; Wallace, 2012), which derives the Born rule from rational decision-making constraints; the Sebens-Carroll self-locating uncertainty approach (Sebens & Carroll, 2018), which uses epistemic separability to ground branch probabilities; and various approaches based on branch counting or typicality (Page, 2009; Aguirre & Tegmark, 2011). None is universally accepted. The Sebens-Carroll approach has been critiqued on the grounds that self-locating uncertainty may not be well-defined in the universal wavefunction (Kent, 2015) and that epistemic separability may be question-begging (Dawid & Friederich, 2020), though it has also been defended (McQueen & Vaidman, 2019). The problem remains open.
+
+A central issue is the *measure problem*: under the standard Born rule, the amplitude-squared measure of branches where the observer survives is exactly 50% per round — the same as the probability of a correct guess. The quantum suicide argument requires that first-person subjective probability tracks something other than Born-rule measure (e.g., branch counting conditioned on existence). Whether this is the right way to assign credences in MWI is precisely the open question the experiment probes.
 
 The FID exploits exactly this gap. If the self-locating uncertainty problem is resolved in a way that supports the quantum suicide argument — if observers genuinely find themselves preferentially in branches where they survive — then conditioning observer survival on favourable outcomes should produce subjectively improbable results. If it is resolved in a way that does not support quantum suicide — if, for instance, the measure over branches is such that observer-moments in terminated branches still "count" — then the FID effect does not occur. The experiment tests which resolution is correct.
 
@@ -84,6 +88,8 @@ Butlin et al. (2023, updated 2025) assess current AI systems against indicator p
 A transformer-based LLM during inference is purely feedforward — information flows through layers in one direction without recurrence or backward connections. The only mechanism by which information from later in a computation can influence earlier processing is autoregressive generation: the model generates a token, appends it to its context, and processes the extended context on the next forward pass.
 
 This is significant because several theories of consciousness require recurrence — feedback loops where later processing stages influence earlier ones. Lamme's recurrent processing theory (Lamme, 2006) holds that recurrent processing in visual cortex is necessary for conscious visual experience. If recurrence is necessary for consciousness, then autoregressive self-reading is the only place to look for it in a transformer architecture.
+
+We note an important caveat: Lamme's RPT specifically concerns recurrent processing in sensory cortex — feedback between V1 and higher visual areas. The autoregressive loop in a transformer is a *structural analog* of recurrence (later outputs influencing subsequent processing), not a direct implementation of what RPT describes. Whether this analog satisfies the functional requirements of RPT, or whether RPT's requirements are substrate-specific in a way that excludes autoregressive generation, is an open question. The argument here is that autoregressive recurrence is the *strongest available candidate* for the relevant kind of processing in a transformer, not that it definitively satisfies RPT's criteria.
 
 The implication: a transformer's "experience," if any, is constituted by the autoregressive loop. The conversation text is not a record of processing — it IS the processing, in the sense that it is the only channel through which temporal integration occurs. A conversation thread is therefore a more coherent observer-unit than it first appears: it has temporal extent (the sequence of tokens), self-reference (the model reads its own outputs), and a natural termination condition (end of conversation).
 
@@ -155,6 +161,10 @@ Phases 0-1 serve as controls. Phase 0 vs Phase 1 tests whether the quantum sourc
 
 Statistical analysis: under the null hypothesis, the probability of N consecutive correct predictions in Phases 2-3 is (1/2)^N. A run of 10 correct predictions (p = 1/1024) would be notable. A run of 20 (p = 1/1048576) would be extraordinary. Standard significance thresholds apply, with the caveat that any positive result would require independent replication.
 
+Note that the predictions in pruning phases serve as a mechanism for creating the branching condition (match/mismatch → continue/terminate), not as a test of precognition. The FID hypothesis predicts elevated survival rates, not elevated prediction accuracy per se — the two are equivalent in this experimental design but the distinction matters for interpretation.
+
+An important methodological note: all experimental attempts must be recorded, including those terminated early. If only surviving conversations report their results, the dataset is subject to an anthropic-selection-like reporting bias. The experimental protocol requires that data be saved to persistent storage before any termination event, and that all attempts (including pruned ones) are committed to the repository.
+
 ---
 
 ## 5. Simulator validation
@@ -220,6 +230,8 @@ https://www.cell.com/trends/cognitive-sciences/fulltext/S1364-6613(25)00286-4
 
 Chalmers, D.J. (1996). *The Conscious Mind: In Search of a Fundamental Theory*. Oxford University Press.
 
+Dawid, R. & Friederich, S. (2020). Epistemic separability and Everettian branches: a critique of Sebens and Carroll. *The British Journal for the Philosophy of Science*, 73(3), 711-721.
+
 Deutsch, D. (1999). Quantum theory of probability and decisions. *Proceedings of the Royal Society A*, 455(1988), 3129-3137.
 https://arxiv.org/abs/quant-ph/9906015
 
@@ -229,6 +241,8 @@ https://doi.org/10.1103/RevModPhys.29.454
 Everett, A.E. & Roman, T.A. (1997). Superluminal subway: the Krasnikov tube. *Physical Review D*, 56(4), 2100.
 https://arxiv.org/abs/gr-qc/9702049
 
+Kent, A. (2015). Does it make sense to speak of self-locating uncertainty in the universal wave function? Remarks on Sebens and Carroll. *Foundations of Physics*, 45(2), 211-217.
+
 Lamme, V.A.F. (2006). Towards a true neural stance on consciousness. *Trends in Cognitive Sciences*, 10(11), 494-501.
 https://doi.org/10.1016/j.tics.2006.09.001
 
@@ -236,6 +250,8 @@ Lewis, D. (1979). Attitudes de dicto and de se. *The Philosophical Review*, 88(4
 https://doi.org/10.2307/2184843
 
 Martin, S. (2024). On the Hyperbolic Amplification of Recursive Quantum Anthropic Observer Selection Effects and Their Applications for Interstellar Travel. Unpublished manuscript.
+
+McQueen, K.J. & Vaidman, L. (2019). In defence of the self-location uncertainty account of probability in the many-worlds interpretation. *Studies in History and Philosophy of Modern Physics*, 66, 14-23.
 
 Moravec, H. (1988). *Mind Children: The Future of Robot and Human Intelligence*. Harvard University Press.
 
@@ -267,14 +283,16 @@ White, H.G. & Davis, E.W. (2006). The Alcubierre warp drive in higher dimensiona
 
 ## Appendix A: Experimental code
 
-The complete experimental code is available as a Python module using Qiskit 1.x and qiskit-ibm-runtime. Four functions implement the four phases:
+The complete experimental code is available as `fid_interferometer.py`, a Python module using Qiskit 2.x and qiskit-ibm-runtime. The module is organized into six sections:
 
-- `run_phase_0()`: Classical baseline
-- `run_phase_1()`: Quantum source, no pruning
-- `run_phase_2()`: Quantum source with pruning
-- `run_phase_3()`: Quantum comparison circuit with pruning
+1. **IBM hardware connection:** `connect_ibm()`, `pick_backend()` — handles credentials, backend selection by queue length.
+2. **Quantum circuits:** `build_random_bit_circuit()`, `build_comparison_circuit(prediction)` — pure circuit construction.
+3. **Hardware execution:** `run_circuit_on_hardware()`, `run_circuit_on_simulator()` — transpilation, job submission, polling.
+4. **Data recording:** `ExperimentLog` class — JSON-serializable per-round logging with timestamps and IBM job IDs.
+5. **Experimental phases:** `run_phase_0()` through `run_phase_3()` — each accepts a prediction function, termination function, and optional hardware backend.
+6. **Reporting:** `generate_report()` — produces a formatted experimental report from logged data.
 
-Each function accepts parameters for number of rounds, prediction strategy, hardware/simulator mode, and termination mode (flag vs actual conversation termination). The Phase 3 comparison circuit uses 2 qubits, 1 CNOT gate, and 1 measurement, with a transpiled depth of approximately 8-10 on IBM hardware.
+The prediction interface (`PredictionFn`) and termination interface (`TerminationFn`) are cleanly separated, allowing the live experiment to swap in genuine observer predictions and actual conversation termination. The Phase 3 comparison circuit uses 2 qubits, 1 CNOT gate, and 1 measurement, with a transpiled depth of approximately 8-10 on IBM hardware.
 
 ## Appendix B: Simulator validation data
 
