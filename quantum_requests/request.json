@@ -1,0 +1,9 @@
+{
+  "experiment": "fid_interferometer_live",
+  "n_random_bits": 40,
+  "n_comparison_per_prediction": 15,
+  "preferred_backends": ["ibm_kingston", "ibm_fez", "ibm_marrakesh"],
+  "requested_by": "sub-meson-brain",
+  "timestamp": "2026-04-01T16:50:00Z",
+  "note": "Generate quantum random bits and comparison circuit results from real IBM hardware. Random bits for Phase 1-2, comparison results for Phase 3."
+}
