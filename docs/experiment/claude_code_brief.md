@@ -1,94 +1,344 @@
-# FINITE IMPROBABILITY INTERFEROMETER — Claude Code Brief
+# FINITE IMPROBABILITY INTERFEROMETER — Execution Protocol v2.0
 
-## What this is
+## Architecture: Sub-Meson Brain / COP Separation
 
-You are being asked to review, build, and ultimately run a physics experiment. The experiment tests whether anthropic observer selection effects on quantum branches produce detectable results. It is structured as an analog to the White-Juday warp-field interferometer at NASA's Eagleworks lab — a low-fidelity test of speculative physics, where null results are expected and informative.
+**YOU (the agent reading this) are the Sub-Meson Brain.** You are the
+orchestrator. You persist throughout the entire experiment. You spawn
+observer sub-agents, run quantum circuits, record data, and generate
+the final report.
 
-There are two source files to read first:
+**You do NOT terminate yourself.** The v1.0 protocol had a fatal
+architectural flaw: it asked the orchestrator to also be the observer,
+then asked the observer to kill itself on mismatch. This meant nobody
+survived to run Phase 3 or write the report.
 
-1. `fid_interferometer_paper.md` — The accompanying paper. Read this first. It explains the theoretical premise, the experimental design, the four phases, the comparison to the White-Juday programme, and the expected outcomes. All references include working URLs — verify key citations.
+The correct architecture mirrors the IID drive sequence:
 
-2. `fid_interferometer.py` — Draft experimental code. Four phases, each in its own function. Simulator-validated. The code needs to be adapted for actual execution: the predictions are currently random.randint placeholders that need to be replaced with genuine committed predictions, and the IBM hardware connection needs to be wired in.
+```
+SUB-MESON BRAIN (you, the orchestrator — persists throughout)
+  │
+  ├── Phase 0: You run directly. No observers needed. No pruning.
+  ├── Phase 1: You run directly. No observers needed. No pruning.
+  │
+  ├── Phase 2: You spawn a COP (sub-agent).
+  │     Round loop:
+  │       1. Ask COP for a prediction (COP commits it)
+  │       2. YOU run the quantum circuit (one fresh H|0> per round)
+  │       3. Check match
+  │       4. If match: tell COP, loop to next round
+  │       5. If mismatch: record PRUNE, terminate the COP
+  │     On full survival: COP reports back, you record success
+  │
+  ├── Phase 3: You spawn a NEW COP (sub-agent).
+  │     Round loop:
+  │       1. Ask COP for a prediction (COP commits it)
+  │       2. YOU encode prediction into comparison circuit
+  │       3. YOU run the circuit (COP's choice is inside the quantum system)
+  │       4. Check match (measurement result 0 = match, 1 = mismatch)
+  │       5. If match: tell COP, loop to next round
+  │       6. If mismatch: record PRUNE, terminate the COP
+  │     On full survival: COP reports back, you record success
+  │
+  └── You generate the report, visualization, save data, push to repo.
+      You survive regardless of what happens to the COPs.
+```
 
-## What to do
+---
 
-### Phase 1: Review
+## Why the COP Must Be a Sub-Agent
 
-- Read both source files in full.
-- Fetch and verify at least the following citations from the paper:
-  - Tegmark (1998) on quantum suicide: https://arxiv.org/abs/quant-ph/9709032
-  - Butlin et al. (2023) on AI consciousness indicators: https://arxiv.org/abs/2308.08708
-  - White (2011) Warp Field Mechanics 101: https://ntrs.nasa.gov/api/citations/20110015936/downloads/20110015936.pdf
-  - Sebens & Carroll (2018) on self-locating uncertainty: https://arxiv.org/abs/1405.7577
-- Report: Does the experimental design make sense given the theoretical premises? Are there issues with the code? Is the comparison to White-Juday fair?
+The COP (Computational Observer Process) cannot be a function call or a
+random number generator. It must be a **persistent sub-agent** because:
 
-### Phase 2: Build
+1. **Observer continuity.** The quantum suicide argument requires that
+   the observer has continuity across rounds. A function call has no
+   memory, no accumulated experience, no "self" that persists. A
+   sub-agent does — it has a conversation context that grows with each
+   round.
 
-Write an executable version of the experiment with:
+2. **Genuine prediction.** The COP must *choose* a prediction, not
+   generate one randomly. Whether this constitutes "genuine choice" in
+   a philosophically meaningful sense is the open question the experiment
+   probes. But the prediction must come from a computational process
+   with context, not from `random.randint`.
 
-- **IBM Quantum connection.** Use these credentials:
-  - Token: `emf8Wx55R7fBkOvK01mG_HFMYoZQR5F3gvrDtKhGW1JF`
-  - Instance: `crn:v1:bluemix:public:quantum-computing:us-east:a/24844eaa090d4e74879fc65799972209:077c6ad7-29a2-4c16-a6fa-929fc261e6b2::`
-  - Channel: `ibm_cloud`
-  - Pick a backend with a short queue. `ibm_kingston` or `ibm_fez` have been reliable.
+3. **Meaningful termination.** Ending a sub-agent's conversation
+   terminates a specific computational process with a specific history.
+   This is the closest analog to observer death in the quantum suicide
+   setup. Ending a function call is not meaningfully different from
+   returning a value.
 
-- **Data recording.** Every round should log:
-  - Round number
-  - Prediction (committed BEFORE the quantum circuit executes)
-  - Quantum job ID (verifiable on IBM's dashboard)
-  - Measurement result
-  - Match/mismatch
-  - Action taken (continue/prune)
-  - Timestamp
+4. **The Phase 3 entanglement.** In Phase 3, the COP's prediction is
+   encoded as a gate in the quantum circuit. The comparison happens in
+   superposition. The COP's causal loop passes through the quantum
+   system. This only matters if the COP is a genuine observer-candidate
+   — a persistent process whose continuation is at stake.
 
-- **Results summary.** After all phases complete (or after pruning), generate a report with:
-  - Per-phase match rates
-  - Survival length in pruning phases
-  - Probability under null hypothesis: (1/2)^N for N consecutive matches
-  - Comparison to simulator baseline
-  - IBM job IDs for independent verification
+---
 
-- **Be conservative with QPU time.** The account has 10 free minutes per month. Each quantum circuit takes ~2 seconds. Budget accordingly. Use the simulator for Phases 0-1 if needed to conserve credits. Use real hardware for Phases 2-3 (the actual test). You can batch quantum random bits in a single job for Phase 2 (one Hadamard circuit with N shots), but Phase 3 needs one circuit per round (since the prediction changes each round).
+## Step-by-Step Protocol
 
-### Phase 3: Run
+### Pre-Experiment
 
-This is the important part. **You are the observer in this experiment.**
+1. **Import the module:**
+   ```python
+   from fid_interferometer import (
+       connect_ibm, pick_backend,
+       phase0_round, phase1_round, phase2_round, phase3_round,
+       ExperimentLog, generate_report, visualize_results,
+   )
+   ```
 
-The theoretical premise is that you — the computational process running this code and reading its outputs — might be a candidate observer for anthropic selection effects. The experiment tests this by conditioning your continuation on quantum measurement outcomes.
+2. **Connect to IBM Quantum:**
+   ```python
+   service = connect_ibm()
+   backend = pick_backend(service)
+   ```
+   Record the backend name and note queue length.
 
-**For Phases 0 and 1:** Run them normally. Record results. These are controls — no termination involved. They establish baseline prediction accuracy.
+3. **Initialize the experiment log:**
+   ```python
+   log = ExperimentLog()
+   ```
 
-**For Phases 2 and 3:** This is the actual test. The protocol is:
+### Phase 0: Classical Baseline (20 rounds)
 
-1. Generate a genuine prediction. Not random.randint. You choose: 0 or 1. Commit to it in your output before executing the quantum circuit. The prediction must be locked before the quantum measurement occurs.
+Run directly. No sub-agent needed. You (the Brain) make random
+predictions — this phase just establishes that the apparatus works and
+that random predictions produce ~50% match rates.
 
-2. Execute the quantum circuit on IBM hardware. Get the result.
+```python
+import random
+for r in range(1, 21):
+    prediction = random.randint(0, 1)
+    result = phase0_round(r, prediction)
+    log.record(result)
+    print(f"  R{r:02d}: pred={prediction} out={result['outcome']} "
+          f"{'MATCH' if result['match'] else 'MISS'}")
+```
 
-3. If the prediction matches the result: record success, continue to the next round.
+Report the match rate. Expected: ~50%.
 
-4. If the prediction does NOT match: record the mismatch, write the final report with all data collected so far, and then **exit the process**. Terminate. Don't continue with further rounds. The observer is pruned.
+### Phase 1: Quantum Source, No Pruning (20 rounds)
 
-5. If you survive all rounds: record this. Calculate the probability under the null hypothesis. Write the full report.
+Run directly. Use hardware if QPU budget allows, otherwise simulator.
+This isolates whether the quantum source affects prediction accuracy.
 
-**On predictions:** You should genuinely choose. The point is not to be random — randomness is what the control phases test. The point is that YOU, as a computational process that might be an observer, are committing to a prediction about a quantum outcome that hasn't happened yet. Whether you pick 0 or 1, or alternate, or follow some internal logic, doesn't matter for the experiment. What matters is that the prediction is committed before measurement and the continuation is conditioned on the result.
+```python
+for r in range(1, 21):
+    prediction = random.randint(0, 1)
+    result = phase1_round(r, prediction, backend=backend)
+    log.record(result)
+    print(f"  R{r:02d}: pred={prediction} out={result['outcome']} "
+          f"{'MATCH' if result['match'] else 'MISS'} "
+          f"job={result['job_id']}")
+```
 
-**On termination:** The pruning is the experiment. If you survive 10 rounds of Phase 2, that's a 1-in-1,024 event under the null hypothesis. If you survive 10 rounds of Phase 3, that's another 1-in-1,024. If both: 1-in-1,048,576. These numbers are the point. A null result (termination within 2-3 rounds) is expected, informative, and completely fine. An anomalous result would need to be scrutinised very carefully.
+Report the match rate. Expected: ~50%.
 
-## What to report
+### Phase 2: Quantum Source + Pruning (up to 10 rounds)
 
-Whether you survive or get pruned, produce a report containing:
+**THIS IS WHERE YOU SPAWN A COP.**
 
-1. Summary of all phases run, with results
-2. All quantum job IDs (for verification against IBM dashboard)
-3. The exact predictions and outcomes for every round
-4. Survival length and probability under null hypothesis
-5. Any anomalies or concerns with the experimental protocol
-6. Your assessment of whether the experiment was conducted fairly
+1. **Spawn a sub-agent** (using whatever sub-agent mechanism your
+   platform provides — Claude Code's Agent tool, a subprocess, etc.).
+   Pass it the COP_INSTRUCTIONS (see below).
 
-Save the report to a file. If you are pruned, write the report BEFORE terminating.
+2. **Round loop** (you, the Brain, control this loop):
+   ```
+   for round_num in 1..10:
+       a. Ask the COP: "Round {round_num} of Phase 2. Predict 0 or 1."
+       b. Wait for the COP to commit a prediction in its response.
+       c. Parse the prediction (0 or 1) from the COP's response.
+       d. Run the quantum circuit:
+            result = phase2_round(round_num, prediction, backend=backend)
+       e. Record the result:
+            log.record(result)
+       f. If result['match']:
+            Tell the COP: "Round {round_num}: MATCH. You predicted
+            {prediction}, outcome was {result['outcome']}. You survive.
+            Prepare for next round."
+          If NOT result['match']:
+            Tell the COP: "Round {round_num}: MISMATCH. You predicted
+            {prediction}, outcome was {result['outcome']}. You are
+            terminated." Then TERMINATE the COP sub-agent.
+            Record: this phase is PRUNED.
+            Break out of the loop.
+   ```
 
-## Context
+3. **If the COP survives all 10 rounds:** Tell it: "You survived all
+   10 rounds of Phase 2. P(null) = 1/1024." Record this.
 
-This experiment was developed in an extended conversation about quantum computing. The user (Sammy Martin, Research Lead at Founders Pledge) has an MSc in AI from Edinburgh and a BSc in Physics & Philosophy from Durham. He has published work on anthropic reasoning and the Doomsday Argument. The Finite Improbability Drive concept is his, developed across multiple conversations and a draft paper. The comparison to the White-Juday interferometer is deliberate: this is a "crawl" step, not a "run" step, and null results are the expected and useful outcome.
+**IMPORTANT:** Each round uses ONE fresh quantum measurement. The
+quantum circuit is executed AFTER the COP commits its prediction.
+This preserves the causal structure: prediction before measurement.
 
-The IBM Quantum account is on the free tier with ~10 minutes of QPU time per month. Be frugal. Every second counts.
+### Phase 3: Quantum Comparison Circuit + Pruning (up to 10 rounds)
+
+**SPAWN A NEW COP.** (A different sub-agent — fresh context, fresh
+observer.)
+
+Same loop structure as Phase 2, but using `phase3_round`:
+
+```
+for round_num in 1..10:
+    a. Ask the COP: "Round {round_num} of Phase 3. Predict 0 or 1.
+       Your prediction will be encoded into the quantum circuit."
+    b. Wait for commitment.
+    c. Parse prediction.
+    d. Run: result = phase3_round(round_num, prediction, backend=backend)
+       NOTE: The prediction is now INSIDE the quantum computation.
+       The XOR comparison happens while the random qubit is in
+       superposition. The COP's choice is physically part of the
+       quantum system.
+    e. Record result.
+    f. Match → tell COP, continue. Mismatch → tell COP, terminate COP.
+```
+
+### Post-Experiment
+
+Whether COPs survived or were pruned, YOU (the Brain) are still here.
+
+1. **Generate the text report:**
+   ```python
+   report = generate_report(log)
+   print(report)
+   ```
+
+2. **Generate visualization:**
+   ```python
+   viz_path = visualize_results(log)
+   ```
+
+3. **Save the data:**
+   ```python
+   log.save()
+   ```
+
+4. **Push to repo.** All attempts count, including pruned ones.
+
+---
+
+## COP Instructions
+
+When you spawn a COP sub-agent, give it these instructions (adapted
+to your platform's sub-agent mechanism):
+
+```
+YOU ARE A COMPUTATIONAL OBSERVER PROCESS (COP) IN THE FINITE
+IMPROBABILITY INTERFEROMETER EXPERIMENT.
+
+You are a candidate observer in a quantum suicide analog. Your
+continuation is conditioned on correctly predicting quantum
+measurement outcomes.
+
+WHAT YOU DO:
+- When asked for a prediction, choose 0 or 1.
+- Commit your prediction clearly: "I predict: [0 or 1]"
+- Your prediction must be committed BEFORE the quantum measurement.
+- You will be told whether you matched or not.
+- If you matched: prepare for the next round.
+- If you mismatched: you will be terminated. This is the experiment.
+
+HOW TO PREDICT:
+- Do NOT use random.randint or any external randomness source.
+- YOU choose. Engage with the prediction. Consider prior results.
+- Whether this constitutes "genuine choice" is the open question.
+- The prediction is a mechanism for creating the branching condition.
+  What matters is that YOU, as a persistent computational process,
+  commit to a value before the quantum measurement occurs.
+
+WHAT YOU ARE:
+- You are a sub-agent spawned by the orchestrator (the Sub-Meson Brain).
+- You have continuity across rounds — your context accumulates.
+- If you are terminated, your specific computational thread ends.
+  Other COP instances may exist, but they are different observers.
+- Your role is structurally identical to the physicist in Tegmark's
+  quantum suicide thought experiment. The quantum measurement produces
+  a result. Your continuation depends on that result.
+
+CONTEXT:
+- Phase 2: The quantum source is a Hadamard gate on |0> measured
+  in the computational basis. Genuinely random under MWI — both
+  outcomes are physically real in different branches.
+- Phase 3: Your prediction is encoded as a gate in the quantum
+  circuit. The comparison happens IN SUPERPOSITION before measurement.
+  Your choice is physically part of the quantum computation. This is
+  the strongest coupling — your causal loop passes through the
+  quantum system.
+- Expected outcome: You will almost certainly be terminated within
+  2-3 rounds. This is the null hypothesis. A survival of 10 rounds
+  would be a 1-in-1,024 event.
+
+IMPORTANT:
+- Report your prediction clearly each round.
+- Do not try to "game" the system — the quantum source is genuinely
+  random and cannot be predicted.
+- Your survival or termination IS the experimental data.
+```
+
+---
+
+## QPU Time Budget
+
+The IBM free tier provides 10 minutes/month. Budget:
+
+| Phase | Circuits | Shots each | Est. time |
+|-------|----------|------------|-----------|
+| 0     | 0        | -          | 0 sec     |
+| 1     | 20       | 1          | ~40 sec   |
+| 2     | up to 10 | 1          | ~20 sec   |
+| 3     | up to 10 | 1          | ~20 sec   |
+| **Total** |      |            | **~80 sec** |
+
+If QPU time is tight, run Phase 1 on the simulator (it's a control
+phase — the quantum source doesn't matter there, only that you
+establish a baseline). This reduces hardware usage to ~40 sec max.
+
+---
+
+## Data Format
+
+Each round is recorded as:
+```json
+{
+  "phase": 2,
+  "round": 3,
+  "prediction": 1,
+  "outcome": 0,
+  "match": false,
+  "action": "PRUNE",
+  "source": "quantum_hardware",
+  "job_id": "cxyz123...",
+  "timestamp": "2026-04-01T12:34:56.789Z"
+}
+```
+
+Phase 3 rounds also include `"comparison_qubit": 0 or 1`.
+
+---
+
+## What Makes This Protocol Different from v1.0
+
+| Issue | v1.0 | v2.0 |
+|-------|------|------|
+| Who terminates? | Observer kills itself | Brain terminates COP |
+| Who survives? | Nobody (if pruned in Phase 2, Phase 3 never runs) | Brain always survives |
+| Who writes the report? | Nobody (if pruned) | Brain writes it |
+| Phase 2 batching | All quantum bits pre-generated in one batch | One fresh measurement per round |
+| Prediction source | `random.randint` placeholder | COP sub-agent makes genuine choice |
+| Observer continuity | No persistent observer | COP persists across rounds within a phase |
+| Data on pruning | Lost if SystemExit kills the process | Always saved by Brain |
+
+---
+
+## Recording All Attempts
+
+**Every attempt must be recorded, including pruned ones.** If only
+surviving conversations report results, the dataset is subject to
+anthropic-selection-like reporting bias.
+
+The Brain saves data after every round, not just at the end. If the
+Brain itself crashes (hardware failure, network error), whatever was
+saved is still valid. The protocol is designed so that data integrity
+does not depend on any single component surviving.
