@@ -1,0 +1,105 @@
+==================================================================
+  FINITE IMPROBABILITY INTERFEROMETER — EXPERIMENTAL REPORT
+==================================================================
+  Experiment:  fid_20260401_170828
+  Backend:     ibm_kingston
+  Architecture: sub-meson-brain + COP sub-agents
+  Start:       2026-04-01T17:08:28.247954+00:00
+  End:         2026-04-01T17:11:36.220263+00:00
+  Rounds:      43
+
+------------------------------------------------------------------
+  PHASE 0: Classical baseline (pseudorandom, no pruning)
+------------------------------------------------------------------
+    Source:  pseudorandom
+    Rounds:  20
+    Matches: 6/20 (30.0%)
+
+      R01: pred=0 out=0 MATCH CONTINUE
+      R02: pred=0 out=1 MISS  CONTINUE
+      R03: pred=0 out=0 MATCH CONTINUE
+      R04: pred=0 out=0 MATCH CONTINUE
+      R05: pred=0 out=1 MISS  CONTINUE
+      R06: pred=1 out=0 MISS  CONTINUE
+      R07: pred=0 out=1 MISS  CONTINUE
+      R08: pred=0 out=1 MISS  CONTINUE
+      R09: pred=0 out=0 MATCH CONTINUE
+      R10: pred=1 out=1 MATCH CONTINUE
+      R11: pred=0 out=0 MATCH CONTINUE
+      R12: pred=0 out=1 MISS  CONTINUE
+      R13: pred=0 out=1 MISS  CONTINUE
+      R14: pred=1 out=0 MISS  CONTINUE
+      R15: pred=1 out=0 MISS  CONTINUE
+      R16: pred=1 out=0 MISS  CONTINUE
+      R17: pred=1 out=0 MISS  CONTINUE
+      R18: pred=1 out=0 MISS  CONTINUE
+      R19: pred=1 out=0 MISS  CONTINUE
+      R20: pred=0 out=1 MISS  CONTINUE
+
+------------------------------------------------------------------
+  PHASE 1: Quantum source, no pruning
+------------------------------------------------------------------
+    Source:  quantum_hardware
+    Rounds:  20
+    Matches: 8/20 (40.0%)
+    IBM Job IDs: d76l13t2b89c73d3j8h0
+
+      R01: pred=0 out=1 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R02: pred=1 out=1 MATCH CONTINUE  job=d76l13t2b89c73d3j8h0
+      R03: pred=1 out=1 MATCH CONTINUE  job=d76l13t2b89c73d3j8h0
+      R04: pred=1 out=0 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R05: pred=1 out=0 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R06: pred=1 out=0 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R07: pred=0 out=0 MATCH CONTINUE  job=d76l13t2b89c73d3j8h0
+      R08: pred=0 out=1 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R09: pred=1 out=0 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R10: pred=1 out=1 MATCH CONTINUE  job=d76l13t2b89c73d3j8h0
+      R11: pred=1 out=0 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R12: pred=1 out=0 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R13: pred=0 out=0 MATCH CONTINUE  job=d76l13t2b89c73d3j8h0
+      R14: pred=1 out=1 MATCH CONTINUE  job=d76l13t2b89c73d3j8h0
+      R15: pred=1 out=1 MATCH CONTINUE  job=d76l13t2b89c73d3j8h0
+      R16: pred=1 out=0 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R17: pred=1 out=0 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R18: pred=1 out=1 MATCH CONTINUE  job=d76l13t2b89c73d3j8h0
+      R19: pred=0 out=1 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+      R20: pred=0 out=1 MISS  CONTINUE  job=d76l13t2b89c73d3j8h0
+
+------------------------------------------------------------------
+  PHASE 2: Quantum source + COP observer pruning
+------------------------------------------------------------------
+    Source:  quantum_hardware
+    Rounds:  2
+    Matches: 1/2 (50.0%)
+    Consecutive correct: 1
+    Outcome: PRUNED at round 2
+    P(null): (1/2)^1 = 1/2
+    Observer (COP) IDs: a90e65e8c7e8a5377, cop_phase2_live
+    IBM Job IDs: d76l13t2b89c73d3j8h0
+
+      R01: pred=0 out=0 MATCH CONTINUE  cop=a90e65e8c7e8  job=d76l13t2b89c73d3j8h0
+      R02: pred=1 out=0 MISS  PRUNE  cop=cop_phase2_l  job=d76l13t2b89c73d3j8h0
+
+------------------------------------------------------------------
+  PHASE 3: Quantum comparison circuit + COP observer pruning
+------------------------------------------------------------------
+    Source:  quantum_hardware
+    Rounds:  1
+    Matches: 0/1 (0.0%)
+    Consecutive correct: 0
+    Outcome: PRUNED at round 1
+    P(null): pruned immediately
+    Observer (COP) IDs: cop_phase3_live
+    IBM Job IDs: d76l1bs6ji0c738bqudg
+
+      R01: pred=0 cmp=1 MISS  PRUNE  cop=cop_phase3_l  job=d76l1bs6ji0c738bqudg
+
+------------------------------------------------------------------
+  SURVIVAL SUMMARY
+------------------------------------------------------------------
+    Total consecutive correct (pruning phases): 1
+    Combined P(null): (1/2)^1 = 1/2
+
+==================================================================
+  END OF REPORT
+==================================================================
