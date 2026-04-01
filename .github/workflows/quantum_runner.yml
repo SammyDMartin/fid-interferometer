@@ -1,0 +1,39 @@
+name: Quantum Circuit Runner
+# Triggered when a quantum request file is pushed.
+# Connects to IBM Quantum hardware, runs the requested circuits,
+# commits results back to the repo.
+
+on:
+  push:
+    branches:
+      - 'claude/review-code-feasibility-fvwU1'
+    paths:
+      - 'data/quantum_request.json'
+
+permissions:
+  contents: write
+
+jobs:
+  run-quantum:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install dependencies
+        run: pip install qiskit qiskit-ibm-runtime
+
+      - name: Run quantum circuits on IBM hardware
+        run: python quantum_runner.py
+
+      - name: Commit results
+        run: |
+          git config user.name "FID Quantum Runner"
+          git config user.email "quantum@fid-interferometer"
+          git add data/quantum_response.json
+          git commit -m "Quantum results from IBM hardware [automated]"
+          git push
