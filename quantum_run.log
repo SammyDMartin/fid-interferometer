@@ -1,0 +1,135 @@
+/opt/hostedtoolcache/Python/3.11.15/x64/lib/python3.11/site-packages/samplomatic/__init__.py:20: UserWarning: 
+You have imported samplomatic==0.17.1 which is in 
+beta development. Please expect breaking changes between 
+minor versions and pin your dependencies accordingly.
+  _warn_once_per_version(
+qiskit_runtime_service._discover_account:WARNING:2026-04-01 17:06:18,195: Loading account with the given token. A saved account will not be used.
+Request: {
+  "experiment": "fid_interferometer_live",
+  "n_random_bits": 40,
+  "n_comparison_per_prediction": 15,
+  "preferred_backends": [
+    "ibm_kingston",
+    "ibm_fez",
+    "ibm_marrakesh"
+  ],
+  "requested_by": "sub-meson-brain",
+  "timestamp": "2026-04-01T17:06:00Z",
+  "attempt": 2,
+  "note": "Generate quantum random bits and comparison circuit results from real IBM hardware. Random bits for Phase 1-2, comparison results for Phase 3."
+}
+Connecting to IBM Quantum...
+Available backends: ['ibm_fez', 'ibm_kingston', 'ibm_marrakesh']
+Using backend: ibm_kingston
+Queue: 0 jobs
+
+Generating 40 quantum random bits...
+Job ID: d76l13t2b89c73d3j8h0
+  Status: QUEUED
+  Status: QUEUED
+  Status: QUEUED
+  Status: QUEUED
+  Status: QUEUED
+  Status: QUEUED
+  Status: QUEUED
+  Status: QUEUED
+  Status: RUNNING
+  Status: RUNNING
+Got 40 random bits: [1, 1, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 1, 1, 0, 0, 1, 1, 1, 0, 0, 0, 1, 0, 1, 0, 1, 1, 1, 1, 0, 1, 1, 0, 0, 1, 0, 1, 1]
+
+Running 15 comparison circuits for prediction=0...
+Job ID: d76l1bs6ji0c738bqudg
+  Status: QUEUED
+  Status: RUNNING
+Got 15 comparison results: [1, 0, 1, 1, 1, 0, 1, 1, 0, 1, 1, 0, 0, 1, 1]
+
+Running 15 comparison circuits for prediction=1...
+Job ID: d76l1dl2b89c73d3j8sg
+  Status: QUEUED
+  Status: RUNNING
+Got 15 comparison results: [1, 1, 1, 0, 1, 1, 0, 0, 0, 0, 1, 1, 1, 0, 0]
+
+Results written to quantum_results/result.json
+{
+  "backend": "ibm_kingston",
+  "timestamp": "2026-04-01T17:06:22+00:00",
+  "random_bits": [
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    0,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    0,
+    0,
+    1,
+    0,
+    1,
+    0,
+    1,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    0,
+    1,
+    1
+  ],
+  "comparison_pred0": [
+    1,
+    0,
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    1,
+    1
+  ],
+  "comparison_pred1": [
+    1,
+    1,
+    1,
+    0,
+    1,
+    1,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    1,
+    0,
+    0
+  ],
+  "random_bits_job_id": "d76l13t2b89c73d3j8h0",
+  "comparison_pred0_job_id": "d76l1bs6ji0c738bqudg",
+  "comparison_pred1_job_id": "d76l1dl2b89c73d3j8sg"
+}
