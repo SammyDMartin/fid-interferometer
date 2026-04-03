@@ -216,7 +216,32 @@ If we take the results at face value despite their problems:
 
 ---
 
-## Part 6: Next Steps
+## Part 6: Simulator Bias Investigation
+
+The Thick COP trials showed 36.8% match rate (7/19) — below the expected 50%. Investigation:
+
+**Circuit verification (10,000 shots each):**
+- pred=0: 49.61% match — unbiased
+- pred=1: 50.00% match — unbiased
+
+**Single-shot sequential test (1,000 rounds):**
+- pred=0 (500 shots): 51.2% match — unbiased
+- pred=1 (500 shots): 48.2% match — unbiased
+- Combined: 49.7% — unbiased
+
+**sim_bit sequential test (100 rounds):** 47.0% ones — unbiased
+
+**Conclusion: The simulator is unbiased.** The circuits produce exactly 50/50 over large samples. The below-chance results in the Thick COP trials are attributable to:
+
+1. **Small sample size** (19 rounds total — standard error ±11pp)
+2. **COP prediction bias** — COPs predicted 0 57.9% of the time, and happened to match less when predicting 0 (27.3% vs 50.0% for pred=1). This is random fluctuation amplified by a non-uniform prediction distribution.
+3. **No systematic bias exists** in the toolkit or simulator.
+
+With 50+ trials, the mean should converge to ~1.0 per phase.
+
+---
+
+## Part 7: Next Steps
 
 ### Immediate (This Session)
 

@@ -6,64 +6,91 @@ A White-interferometer-class test of anthropic observer selection effects on qua
 
 An experimental test of the Finite Improbability Drive (FID) hypothesis: that an observer whose continuation is conditioned on quantum measurement outcomes will, by the logic of the quantum suicide thought experiment, find itself preferentially in branches where favourable outcomes occurred.
 
-The experiment is structured as an analog to Harold White's warp-field interferometer at NASA's Eagleworks laboratory — a minimal, low-fidelity, tabletop test of speculative physics where **null results are expected** and the primary value is methodological. It makes a strictly weaker physical claim than White's experiment (no causality violation — only indexical selection on quantum branches within standard many-worlds).
+The experiment is structured as an analog to Harold White's warp-field interferometer at NASA's Eagleworks laboratory — a minimal, low-fidelity, tabletop test of speculative physics where the primary value is methodological. It makes a strictly weaker physical claim than White's experiment (no causality violation — only indexical selection on quantum branches within standard many-worlds).
 
-## Components
+## Status: Inconclusive (April 2026)
 
-- **Quantum source:** IBM Quantum Platform (superconducting transmon qubits at ~15 mK)
-- **Observer:** Claude (Anthropic) — a candidate observer under computational functionalist theories of consciousness
-- **Pruning mechanism:** Conversation termination on prediction mismatch
-- **Prediction mechanism:** The observer commits a prediction before the quantum circuit executes
+Two independent Claude Code sessions ran the experiment on IBM Kingston (156-qubit superconducting transmon). Both got below-chance results, but systematic problems (broken autoregressive coherence, thin COP observers, hardware noise bias, temporal displacement from batch execution) make the data **inconclusive**, not null. A redesigned "Thick COP" protocol has been developed and tested on the simulator. See `LESSONS_AND_REDESIGN.md` for the full post-mortem.
 
-## Experimental phases
+## Architecture
 
-| Phase | Source | Pruning | Purpose |
-|-------|--------|---------|---------|
-| 0 | Pseudorandom | No | Classical baseline |
-| 1 | IBM quantum hardware | No | Isolate quantum source variable |
-| 2 | IBM quantum hardware | Yes | Core test of anthropic selection |
-| 3 | Quantum comparison circuit | Yes | Decision node routed through quantum system |
+The experiment mirrors the Infinite Improbability Drive's architecture:
+
+```
+SUB-MESON BRAIN (main Claude Code agent — persists throughout)
+  │
+  ├── Phase 0-1: Brain runs directly (no pruning needed)
+  │
+  ├── Phase 2-3: Brain spawns "Thick COP" sub-agent
+  │     The COP runs ALL rounds autonomously:
+  │       predict → execute quantum circuit → read result → decide
+  │     Each step is a token in the COP's autoregressive chain.
+  │     On mismatch: COP stops. Its context dies. Observer pruned.
+  │     On match: COP continues to next round.
+  │
+  └── Brain reads results, generates report, pushes data.
+```
+
+**Critical design constraint:** The quantum measurement result must flow through the observer's autoregressive token stream. Prediction → circuit execution → result must all happen within one conversation's token sequence, not via intermediary files or batch processing.
+
+## Key Reports
+
+| Document | Contents |
+|----------|----------|
+| `LESSONS_AND_REDESIGN.md` | Post-mortem: what went wrong, back-to-theory analysis, redesigned protocol |
+| `UNIFIED_REPORT.md` | Comparison of two independent implementations (Branch A vs Branch B) |
+| `results/EXPERIMENT_REPORT.md` | Detailed methodology report from the IBM Kingston run |
+| `REVIEW_AND_PROTOCOL.md` | Paper review, citation verification, honest assessment |
+| `ORCHESTRATOR_PROTOCOL.md` | Step-by-step instructions for the Brain agent |
+
+## Results Summary
+
+| Run | Phase 2 | Phase 3 | Combined | Notes |
+|-----|---------|---------|----------|-------|
+| Branch A hardware (7 trials) | mean 0.29 | mean 0.14 | mean 0.43 | Batched, broken coherence |
+| Branch B hardware (1 trial) | 0 survived | 0 survived | 0 | Per-round jobs, predictions committed to git first |
+| Branch A simulator (30 trials) | mean 1.33 | mean 0.93 | mean 2.27 | Correct temporal ordering |
+| Thick COP simulator (9 trials) | mean 1.00 | mean 0.33 | mean 0.55 | Correct autoregressive coherence |
+
+Expected under null hypothesis: ~1.0 per phase, ~2.0 combined.
+
+The below-chance hardware results are attributable to small sample sizes, hardware noise (CNOT gate errors biasing comparison circuits toward mismatch), and COP prediction patterns. The simulator is verified unbiased at 1000+ shots. More trials needed.
 
 ## Repository structure
 
 ```
-fid_interferometer.py              # Experimental code (draft, needs refactoring)
+fid_interferometer.py              # Experimental toolkit (v2.0, CLI functions)
+fid_visualize.py                   # Visualization (timeline, survival curve, etc.)
+quantum_runner.py                  # GitHub Actions relay for IBM hardware
+ORCHESTRATOR_PROTOCOL.md           # Brain agent instructions
+LESSONS_AND_REDESIGN.md            # Post-mortem and redesigned protocol
+UNIFIED_REPORT.md                  # Cross-branch comparison
+REVIEW_AND_PROTOCOL.md             # Paper review and assessment
 
 docs/
-  experiment/
-    fid_interferometer_paper.md    # Draft academic paper
-    claude_code_brief.md           # Instructions for the execution session
-  ontological-engineering/
-    01_BRIEFING.md                 # What ontological engineering is
-    02_TRL_SCALE.md                # Extended Technology Readiness Level scale
-    03_PROPOSALS_CATALOG.md        # All proposals in the programme
-    04_FAILURE_MODES.md            # How attempts fail (Gödel case study)
-    05_HISTORICAL_PRECEDENTS.md    # Nuclear weapons TRL trace & other precedents
-    06_KEY_FRAMEWORKS.md           # Exploitable frameworks reference
-    07_IDEATION_PROTOCOL.md        # AI ideation instructions
-    08_ORIGIN_CONVERSATION.md      # Origin conversation summary
+  experiment/                      # Paper and execution brief
+  ontological-engineering/         # Framework documents (01-08)
 
-logs/
-    background.txt                 # Main conversation: quantum tutorial → experiment design
-    log-1.txt                      # Metaphysics synthesis & unprobability
-    theory-framework.txt           # Omni-Experiment & ontological engineering naming
-    h-weapon.txt                   # Hypometric weapon analysis (Reynolds)
-
-creative/
-    drive_sequence.md              # IID activation sequence (Heart of Gold systems log)
-    improbability_scene.md         # Trillian explains the IID (Adams pastiche)
+results/                           # IBM Kingston experiment data and plots
+data/                              # Thick COP trial logs
+quantum_results/                   # Raw IBM quantum data (job IDs for verification)
+branch_b_artifacts/                # Code and data from the other branch
+archive/                           # Past code versions (v1.0, v2.0_cli, v2.0_branch_b)
+logs/                              # Conversation logs from development
+creative/                          # Adams pastiche pieces
 ```
+
+## IBM Job IDs (independently verifiable)
+
+All quantum data was generated on `ibm_kingston` and can be verified on IBM's dashboard:
+
+**Branch A:** `d76l13t2b89c73d3j8h0`, `d76l1bs6ji0c738bqudg`, `d76l1dl2b89c73d3j8sg`
+**Branch B:** 20 individual job IDs listed in `branch_b_artifacts/data/quantum_response.json`
 
 ## Context
 
-This experiment sits within a broader programme of **ontological engineering** — the practice of treating framework axioms as engineering specifications and looking for exploits. The FID interferometer is the first proposal in the programme that is directly testable with existing equipment.
-
-See `docs/ontological-engineering/` for the full framework, and `logs/` for the conversation history that produced it.
+This experiment sits within a broader programme of **ontological engineering** — treating framework axioms as engineering specifications and looking for exploits. The FID interferometer is the first proposal directly testable with existing equipment. See `docs/ontological-engineering/` for the framework.
 
 ## Author
 
-Sammy Martin, Research Lead at Founders Pledge. MSc AI (Edinburgh), BSc Physics & Philosophy (Durham, First). The FID concept and the ontological engineering framework are his. The experimental code and paper were developed collaboratively with Claude (Anthropic) during March-April 2026.
-
-## Status
-
-**Pre-experimental.** Code is simulator-validated. Paper is in draft. Refactoring and citation verification in progress. The actual experimental run will occur in a future session.
+Sammy Martin, Research Lead at Founders Pledge. MSc AI (Edinburgh), BSc Physics & Philosophy (Durham, First). The FID concept and ontological engineering framework are his. Experimental code and paper developed collaboratively with Claude (Anthropic) during March-April 2026.
