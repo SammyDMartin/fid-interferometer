@@ -1,0 +1,28 @@
+{
+  "request_id": "fid_hardware_run_001",
+  "description": "FID Interferometer v2.0 — first IBM hardware run",
+  "committed_at": "2026-04-01T16:45:00+00:00",
+  "note": "All predictions were committed by COP sub-agents BEFORE this file was pushed. The quantum measurements happen after push, when the GitHub Actions runner executes quantum_runner.py on IBM hardware. Causal ordering: prediction -> commit -> push -> measurement.",
+  "circuits": [
+    {"id": "p2_r01", "type": "hadamard", "phase": 2, "round": 1, "cop": "COP-3", "prediction": 0},
+    {"id": "p2_r02", "type": "hadamard", "phase": 2, "round": 2, "cop": "COP-3", "prediction": 0},
+    {"id": "p2_r03", "type": "hadamard", "phase": 2, "round": 3, "cop": "COP-3", "prediction": 1},
+    {"id": "p2_r04", "type": "hadamard", "phase": 2, "round": 4, "cop": "COP-3", "prediction": 0},
+    {"id": "p2_r05", "type": "hadamard", "phase": 2, "round": 5, "cop": "COP-3", "prediction": 1},
+    {"id": "p2_r06", "type": "hadamard", "phase": 2, "round": 6, "cop": "COP-3", "prediction": 1},
+    {"id": "p2_r07", "type": "hadamard", "phase": 2, "round": 7, "cop": "COP-3", "prediction": 0},
+    {"id": "p2_r08", "type": "hadamard", "phase": 2, "round": 8, "cop": "COP-3", "prediction": 1},
+    {"id": "p2_r09", "type": "hadamard", "phase": 2, "round": 9, "cop": "COP-3", "prediction": 0},
+    {"id": "p2_r10", "type": "hadamard", "phase": 2, "round": 10, "cop": "COP-3", "prediction": 1},
+    {"id": "p3_r01", "type": "comparison", "phase": 3, "round": 1, "cop": "COP-4", "prediction": 0},
+    {"id": "p3_r02", "type": "comparison", "phase": 3, "round": 2, "cop": "COP-4", "prediction": 1},
+    {"id": "p3_r03", "type": "comparison", "phase": 3, "round": 3, "cop": "COP-4", "prediction": 0},
+    {"id": "p3_r04", "type": "comparison", "phase": 3, "round": 4, "cop": "COP-4", "prediction": 1},
+    {"id": "p3_r05", "type": "comparison", "phase": 3, "round": 5, "cop": "COP-4", "prediction": 0},
+    {"id": "p3_r06", "type": "comparison", "phase": 3, "round": 6, "cop": "COP-4", "prediction": 1},
+    {"id": "p3_r07", "type": "comparison", "phase": 3, "round": 7, "cop": "COP-4", "prediction": 0},
+    {"id": "p3_r08", "type": "comparison", "phase": 3, "round": 8, "cop": "COP-4", "prediction": 1},
+    {"id": "p3_r09", "type": "comparison", "phase": 3, "round": 9, "cop": "COP-4", "prediction": 0},
+    {"id": "p3_r10", "type": "comparison", "phase": 3, "round": 10, "cop": "COP-4", "prediction": 1}
+  ]
+}
