@@ -1,10 +1,10 @@
 {
-  "experiment": "fid_interferometer_live",
-  "n_random_bits": 40,
-  "n_comparison_per_prediction": 15,
+  "experiment": "fid_interferometer_v3_thick_cop",
+  "n_random_bits": 100,
+  "n_comparison_per_prediction": 50,
   "preferred_backends": ["ibm_kingston", "ibm_fez", "ibm_marrakesh"],
-  "requested_by": "sub-meson-brain",
-  "timestamp": "2026-04-01T17:06:00Z",
-  "attempt": 2,
-  "note": "Generate quantum random bits and comparison circuit results from real IBM hardware. Random bits for Phase 1-2, comparison results for Phase 3."
+  "requested_by": "sub-meson-brain-v3",
+  "timestamp": "2026-04-03T13:05:00Z",
+  "attempt": 3,
+  "note": "Larger data pool for Thick COP protocol. 100 random bits for Phase 2, 50 comparison circuits per prediction value for Phase 3. This gives enough data for 50+ independent trials with proper autoregressive coherence within each COP's token stream."
 }
