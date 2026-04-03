@@ -1,0 +1,52 @@
+{
+  "backend": "ibm_kingston",
+  "job_ids": {
+    "random_bits": "d76l13t2b89c73d3j8h0",
+    "comparison_pred0": "d76l1bs6ji0c738bqudg",
+    "comparison_pred1": "d76l1dl2b89c73d3j8sg"
+  },
+  "trials": [
+    {
+      "trial": 1,
+      "p2_survived": 1,
+      "p3_survived": 0,
+      "total": 1
+    },
+    {
+      "trial": 2,
+      "p2_survived": 1,
+      "p3_survived": 0,
+      "total": 1
+    },
+    {
+      "trial": 3,
+      "p2_survived": 0,
+      "p3_survived": 1,
+      "total": 1
+    },
+    {
+      "trial": 4,
+      "p2_survived": 0,
+      "p3_survived": 0,
+      "total": 0
+    },
+    {
+      "trial": 5,
+      "p2_survived": 0,
+      "p3_survived": 0,
+      "total": 0
+    },
+    {
+      "trial": 6,
+      "p2_survived": 0,
+      "p3_survived": 0,
+      "total": 0
+    },
+    {
+      "trial": 7,
+      "p2_survived": 0,
+      "p3_survived": 0,
+      "total": 0
+    }
+  ]
+}

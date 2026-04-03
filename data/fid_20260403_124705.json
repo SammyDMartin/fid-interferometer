@@ -1,0 +1,11 @@
+{
+  "metadata": {
+    "experiment_id": "fid_20260403_124705",
+    "start_time": "2026-04-03T12:47:05.922429+00:00",
+    "end_time": null,
+    "backend": "thick_cop_t2",
+    "version": "2.0",
+    "architecture": "sub-meson-brain + COP sub-agents"
+  },
+  "rounds": []
+}

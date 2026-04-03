@@ -1,0 +1,50 @@
+{
+  "metadata": {
+    "experiment_id": "fid_20260401_164846",
+    "start_time": "2026-04-01T16:48:46.533825+00:00",
+    "end_time": "2026-04-01T16:48:49.392412+00:00",
+    "backend": "simulator",
+    "version": "2.0",
+    "architecture": "sub-meson-brain + COP sub-agents",
+    "total_rounds": 3
+  },
+  "rounds": [
+    {
+      "phase": 2,
+      "round": 1,
+      "prediction": 1,
+      "outcome": 1,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:48:47.356011+00:00",
+      "observer_id": "cop_p2_trial18"
+    },
+    {
+      "phase": 2,
+      "round": 2,
+      "prediction": 1,
+      "outcome": 0,
+      "match": false,
+      "action": "PRUNE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:48:48.200461+00:00",
+      "observer_id": "cop_p2_trial18"
+    },
+    {
+      "phase": 3,
+      "round": 1,
+      "prediction": 1,
+      "outcome": null,
+      "match": false,
+      "action": "PRUNE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:48:48.954766+00:00",
+      "observer_id": "cop_p3_trial18",
+      "comparison_qubit": 1
+    }
+  ]
+}
