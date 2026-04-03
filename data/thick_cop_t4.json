@@ -46,6 +46,19 @@
       "timestamp": "2026-04-03T12:49:12.485500+00:00",
       "observer_id": "thick_cop_t4",
       "comparison_qubit": 1
+    },
+    {
+      "phase": 3,
+      "round": 1,
+      "prediction": 1,
+      "outcome": null,
+      "match": false,
+      "action": "PRUNE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-03T12:50:39.217161+00:00",
+      "observer_id": "thick_cop_t4",
+      "comparison_qubit": 1
     }
   ]
 }
