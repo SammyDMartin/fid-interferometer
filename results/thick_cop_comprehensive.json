@@ -1,0 +1,137 @@
+{
+  "thick_cop_trials": [
+    {
+      "trial": 1,
+      "phase": 2,
+      "survived": 1,
+      "source": "sim"
+    },
+    {
+      "trial": 2,
+      "phase": 2,
+      "survived": 0,
+      "source": "sim"
+    },
+    {
+      "trial": 3,
+      "phase": 2,
+      "survived": 2,
+      "source": "sim"
+    },
+    {
+      "trial": 4,
+      "phase": 3,
+      "survived": 0,
+      "source": "sim"
+    },
+    {
+      "trial": 5,
+      "phase": 3,
+      "survived": 0,
+      "source": "sim"
+    },
+    {
+      "trial": 6,
+      "phase": 3,
+      "survived": 1,
+      "source": "sim"
+    },
+    {
+      "trial": 7,
+      "phase": 3,
+      "survived": 1,
+      "source": "sim"
+    },
+    {
+      "trial": 8,
+      "phase": 3,
+      "survived": 0,
+      "source": "sim"
+    },
+    {
+      "trial": 9,
+      "phase": 3,
+      "survived": 0,
+      "source": "sim"
+    },
+    {
+      "trial": 10,
+      "phase": 3,
+      "survived": 0,
+      "source": "sim"
+    },
+    {
+      "trial": 11,
+      "phase": 3,
+      "survived": 6,
+      "source": "sim"
+    },
+    {
+      "trial": 12,
+      "phase": 3,
+      "survived": 3,
+      "source": "sim"
+    },
+    {
+      "trial": 13,
+      "phase": 3,
+      "survived": 0,
+      "source": "sim"
+    },
+    {
+      "trial": 14,
+      "phase": 3,
+      "survived": 1,
+      "source": "sim"
+    },
+    {
+      "trial": 15,
+      "phase": 3,
+      "survived": 0,
+      "source": "sim"
+    },
+    {
+      "trial": 16,
+      "phase": 3,
+      "survived": 1,
+      "source": "sim"
+    },
+    {
+      "trial": 17,
+      "phase": 3,
+      "survived": 4,
+      "source": "sim"
+    },
+    {
+      "trial": 18,
+      "phase": 3,
+      "survived": 0,
+      "source": "sim"
+    },
+    {
+      "trial": 19,
+      "phase": 3,
+      "survived": 2,
+      "source": "sim"
+    }
+  ],
+  "simulator_stats": {
+    "n_trials": 19,
+    "phase2_mean": 1.0,
+    "phase3_mean": 1.1875,
+    "overall_mean": 1.1578947368421053,
+    "max_survived": 6
+  },
+  "hardware_noise": {
+    "backend": "ibm_kingston",
+    "random_bits_bias": 0.53,
+    "comparison_pred0_match_rate": 0.36,
+    "comparison_pred1_match_rate": 0.42,
+    "combined_match_rate": 0.39,
+    "job_ids": {
+      "random_bits": "d77rkqak86tc739uhtgg",
+      "comparison_pred0": "d77rkv1q1efs73d1130g",
+      "comparison_pred1": "d77rl1geecps73d6epr0"
+    }
+  }
+}
