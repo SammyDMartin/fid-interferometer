@@ -291,6 +291,88 @@ def classical_random_bit():
 
 
 # ============================================================
+# AUTHORITATIVE PER-ROUND OBSERVE (v3)
+# ============================================================
+#
+# `observe` is the artifact-proof primitive for the v3 protocol. It runs ONE
+# round of the comparison circuit, writes the ground-truth result to a per-trial
+# JSONL log ITSELF, and prints the result so the observer reads it in-stream.
+#
+# Survival is later derived FROM THE LOG by the orchestrator, never from the
+# observer's self-report. Observer and control call the identical function, so
+# instrumentation is symmetric (closes validity criterion C8).
+
+def observe(log_path, prediction, source="sim", backend=None):
+    """
+    Run one round of the comparison circuit, append the authoritative result to
+    a JSONL trial log, and print it. Used identically by observer and control.
+
+    log_path : per-trial JSONL file (one round per line)
+    prediction : 0 or 1 (the committed prediction for THIS round)
+    source : "sim" (Aer) or "hw" (IBM hardware)
+    """
+    prediction = int(prediction)
+    if source == "hw":
+        res = run_comparison_circuit(prediction, backend)  # prints its own line too
+        comparison_qubit = res["comparison_qubit"]
+        job_id = res.get("job_id")
+    else:
+        qc = build_comparison_circuit(prediction)
+        counts = AerSimulator().run(qc, shots=1).result().get_counts()
+        comparison_qubit = int(list(counts.keys())[0])
+        job_id = None
+
+    match = (comparison_qubit == 0)
+
+    p = Path(log_path)
+    p.parent.mkdir(parents=True, exist_ok=True)
+    # round index = number of lines already present
+    prior = 0
+    if p.exists():
+        prior = sum(1 for _ in p.open()) if p.stat().st_size else 0
+    record = {
+        "round": prior + 1,
+        "prediction": prediction,
+        "comparison_qubit": comparison_qubit,
+        "match": match,
+        "source": source,
+        "job_id": job_id,
+        "ts": _now(),
+    }
+    with p.open("a") as f:
+        f.write(json.dumps(record) + "\n")
+
+    # Printed for the observer to read in its own token stream (criterion C2).
+    print(json.dumps({"round": record["round"], "match": match,
+                       "comparison_qubit": comparison_qubit,
+                       "result": "MATCH — survive" if match else "MISMATCH — pruned"}))
+    return record
+
+
+def trial_survival(log_path):
+    """
+    Derive the authoritative survival count from a trial's JSONL log:
+    the number of consecutive MATCH rounds from the start before the first
+    MISMATCH. Ground truth; independent of any self-report.
+    """
+    p = Path(log_path)
+    if not p.exists() or not p.stat().st_size:
+        return 0
+    survived = 0
+    for line in p.open():
+        line = line.strip()
+        if not line:
+            continue
+        rec = json.loads(line)
+        if rec.get("match"):
+            survived += 1
+        else:
+            break
+    print(json.dumps({"log": str(log_path), "survived": survived}))
+    return survived
+
+
+# ============================================================
 # EXPERIMENT LOGGING (append-only JSON log)
 # ============================================================
 
@@ -554,6 +636,8 @@ def _cli():
         print("  sim_compare <prediction>   Run comparison circuit (simulator)")
         print("  hw_bit [backend]           Generate quantum bit (hardware)")
         print("  hw_compare <pred> [backend] Run comparison circuit (hardware)")
+        print("  observe <log> <pred> [sim|hw] [backend]  One round, logs ground truth (v3)")
+        print("  survival <log>             Derive authoritative survival from a trial log")
         print("  log_round <log_path> <json_data>  Append round to log")
         print("  finalize <log_path>        Finalize experiment log")
         print("  report <log_path>          Generate report from log")
@@ -583,6 +667,15 @@ def _cli():
         pred = int(sys.argv[2])
         backend = sys.argv[3] if len(sys.argv) > 3 else None
         run_comparison_circuit(pred, backend)
+    elif cmd == "observe":
+        # observe <log_path> <prediction> [sim|hw] [backend]
+        log_path = sys.argv[2]
+        pred = int(sys.argv[3])
+        source = sys.argv[4] if len(sys.argv) > 4 else "sim"
+        backend = sys.argv[5] if len(sys.argv) > 5 else None
+        observe(log_path, pred, source=source, backend=backend)
+    elif cmd == "survival":
+        trial_survival(sys.argv[2])
     elif cmd == "log_round":
         log_path = sys.argv[2]
         data = json.loads(sys.argv[3])

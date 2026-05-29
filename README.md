@@ -1,117 +1,92 @@
 # Finite Improbability Interferometer
 
-A White-interferometer-class test of anthropic observer selection effects on quantum branches.
+A White-interferometer-class test of anthropic observer selection on quantum
+branches. A minimal, low-fidelity tabletop probe of the quantum-suicide /
+Finite-Improbability-Drive hypothesis — modelled on NASA Eagleworks' warp-field
+interferometer, where a null result is expected and the value is methodological.
 
-## What this is
+**Full motivation, theory, and pooled re-analysis: [`docs/META_ANALYSIS.md`](docs/META_ANALYSIS.md).**
 
-An experimental test of the Finite Improbability Drive (FID) hypothesis: that an observer whose continuation is conditioned on quantum measurement outcomes will, by the logic of the quantum suicide thought experiment, find itself preferentially in branches where favourable outcomes occurred.
+## Status (May 2026): marginal, confounded, not yet a valid test
 
-The experiment is structured as an analog to Harold White's warp-field interferometer at NASA's Eagleworks laboratory — a minimal, low-fidelity, tabletop test of speculative physics where the primary value is methodological.
+Across the only two runs with both a genuine observer and a control (50 matched
+pairs, simulator), the observer survives longer than the geometric null
+(mean 1.38 vs null 1.0, **p=0.057**) while the control sits exactly at null —
+consistent across two independent runs (heterogeneity p=0.78). **But** the
+simulator has no real branching (so it cannot test the mechanism) and both runs
+let the observer *self-report* its survival counts (an asymmetric-counting
+artifact that could fully explain the elevation). No run to date satisfies the
+validity criteria. See [`protocol/VALIDITY_CRITERIA.md`](protocol/VALIDITY_CRITERIA.md).
 
-## Status: Marginal / Inconclusive (May 2026)
+## The idea in one paragraph
 
-The best result so far: observer COP achieved p=0.077 vs null (20-pair matched experiment, April 2026), with a maximum of 2^8 = 256:1 improbability. Control was at p=0.134. Paired comparison showed no systematic difference (p=0.872). A third 30-pair run is in progress.
+Under many-worlds, an observer whose continuation is conditioned on a quantum
+coin only ever *finds itself* in branches where the coin went its way (Everett
+1957; Tegmark 1998). The candidate observer here is an LLM's autoregressive
+context: a sub-agent (a **COP**, Computational Observer Process) predicts a bit,
+a quantum **comparison circuit** computes prediction-XOR-coin in superposition,
+and on a mismatch the sub-agent's context is abandoned — pruned. The orchestrator
+(**Sub-Meson Brain**) spawns and prunes; it never dies. The circuit has *no skill
+channel* (P(match)=0.5 exactly), so any elevation is chance, a bug, or the effect.
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│           FINITE IMPROBABILITY INTERFEROMETER v3.0                │
-│                    Drive Status Console                           │
-│                                                                   │
-│  Improbability Field:          PROBED (not activated)            │
-│  Range Tested:                 2^1 through 2^8 (2:1 — 256:1)   │
-│  Maximum Achieved:             2^8 = 256:1 (observer, Pair 19)  │
-│  Observer Status:              UNCERTAIN (P ≈ 10-20%)           │
-│  Branching Source:             SIMULATED (Aer, genuine PRNG)    │
-│  Autoregressive Coherence:     MAINTAINED (Thick COP protocol)  │
-│                                                                   │
-│  RESULT: Marginal. Suggestive. Inconclusive. Interesting.        │
-└──────────────────────────────────────────────────────────────────┘
-```
-
-## Architecture: The Agent Pipeline
-
-Understanding this is essential. The experiment cannot be run by a human. It must be run by a Claude agent that can spawn sub-agents.
-
-```
-YOU (Sub-Meson Brain — main Claude Code agent)
-  │
-  │  You persist throughout. You run Python toolkit functions.
-  │  You spawn and prune COP sub-agents. You record everything.
-  │
-  ├── Control trials: run directly (no sub-agent)
-  │     random.randint(0,1) predictions → sim_compare → log survival rounds
-  │     These establish the baseline. No observer present.
-  │
-  └── Observer trials: spawn ONE COP sub-agent (Agent tool)
-        The COP has Bash access and runs its own trials autonomously.
-        For each trial:
-          1. COP makes a GENUINE prediction (0 or 1) — thinks about it
-          2. COP runs: python fid_interferometer.py sim_compare [pred]
-          3. COP reads the JSON result (match/mismatch)
-          4. MATCH → COP survives this round, continues to next round
-          5. MISMATCH → trial ends, record rounds survived, start next trial
-
-The COP's autoregressive chain is the observer. Prediction → quantum result
-→ decision all flow through the SAME token stream. This is what makes it
-"Thick" — the observer and the measurement are causally coupled in-sequence.
-
-PRUNING: Observer "death" = the Brain stops sending messages to the COP.
-The COP's context ends. In the other Everettian branch, it survived.
-```
-
-**Why one COP for many trials?** Spawning a fresh sub-agent per trial takes ~20-30 seconds overhead each. One COP running all observer trials sequentially is ~5x faster. The same autoregressive chain is the "observer" throughout — it accumulates its own history of the experiment.
-
-**Why control trials have no COP?** This is the key design decision. Control trials use `random.randint` with no sub-agent involved at all. The COP is not even present. This is a cleaner control than asking the same COP to "make random predictions" — random.randint genuinely has no observer.
-
-## Results History
-
-| Run | N | Observer mean | Control mean | Observer p | Notes |
-|-----|---|---------------|--------------|------------|-------|
-| IBM Kingston (Branch A, 7 trials) | 7 | 0.43 (combined) | N/A | N/A | Batch execution, hardware noise |
-| Thick COP sim, v1 (9 trials) | 9 | 1.00 | N/A | N/A | Protocol validation |
-| Matched pairs v1 (20 pairs) | 20 | **1.45** | 1.35 | **0.077** | Best result; observer max=2^8 |
-| Matched pairs v2 (30 pairs) | 30 | TBD | 0.77 | TBD | In progress (May 2026) |
-
-Expected under null: mean=1.0, p vs null ≈ 0.5.
-
-## Key Files
+## The agent pipeline
 
 ```
-fid_interferometer.py              # Toolkit — sim_compare, hw_compare, sim_bit, etc.
-fid_visualize.py                   # 4-panel dark visualization
-quantum_runner.py                  # GitHub Actions relay for IBM hardware
-ORCHESTRATOR_PROTOCOL.md           # Complete Brain agent instructions (executable)
+SUB-MESON BRAIN (orchestrator agent — persists)
+ ├── CONTROL ARM:  pure code, no LLM — random.randint plays the circuit
+ │                 (src/experiment.py control)
+ ├── OBSERVER ARM: one FRESH sub-agent per trial (the observer). It lives one
+ │                 life — predict → observe → read result → continue/stop — all
+ │                 in its own token stream. Mismatch ⇒ context abandoned (pruned).
+ └── AGGREGATE:    survival derived from disk logs (never self-report); analysis.
+                   (src/experiment.py aggregate → src/analyze.py)
+```
 
+The current, validity-correct version of this (fresh observer per trial, parallel,
+log-derived survival, tiered sim→hardware) is specified in
+[`protocol/EXPERIMENT_V3_DESIGN.md`](protocol/EXPERIMENT_V3_DESIGN.md) — **proposed, not yet run.**
+
+## Repository layout
+
+```
+src/                       Python: toolkit, analysis, control+aggregate harness, relay
+  fid_interferometer.py      circuits + observe/survival primitives (authoritative logging)
+  analyze.py                 unified statistics engine
+  experiment.py              v3 control arm + aggregation
+  fid_visualize.py           figures
+  quantum_runner.py          IBM hardware runner (GitHub Actions relay)
+protocol/                  How the experiment is run
+  EXPERIMENT_V3_DESIGN.md    current design (review before running)
+  VALIDITY_CRITERIA.md       the 9 criteria + per-experiment audit
+  ORCHESTRATOR_PROTOCOL.md   original phased architecture + rationale
+  observer_prompt.md         exact COP prompt
 docs/
-  ontological-engineering/         # Framework (01-08, ontological engineering programme)
-  history/                         # All prior reports in chronological order
-    01_review_and_protocol.md      # Paper review and initial protocol design
-    02_unified_report.md           # Branch A vs Branch B comparison
-    03_lessons_and_redesign.md     # Post-mortem, Thick COP protocol development
-    04_ibm_hardware_experiment.md  # IBM Kingston full experiment report (April 1)
-    05_matched_pairs_experiment.md # 20-pair matched experiment report (April 3)
-    06_preregistration_v2.md       # Pre-registration for 30-pair run (May 2026)
-  experiment/                      # Theoretical paper and execution brief
-
-data/                              # Trial logs (JSON)
-results/                           # Analysis outputs and plots
-quantum_results/                   # Raw IBM quantum data (verifiable job IDs)
-branch_b_artifacts/                # Data from the alternative implementation
-archive/                           # Past code versions
+  META_ANALYSIS.md           full report: motivation, theory, pooled re-analysis, roadmap
+  ontological-engineering/   the broader framework (01–08)
+  experiment/                the theory paper
+  history/                   archived prior reports (chronological)
+experiments/               one directory per run + README index
+  exp1_kingston_apr1/  exp2_branch_b/  exp3_pairs_v1/  exp4_pairs_v2/  raw_logs/
+.github/workflows/         quantum_run.yml — IBM relay (runs src/quantum_runner.py)
 ```
 
-## IBM Job IDs (independently verifiable)
+## Reproduce the analysis
 
-All IBM quantum data is on `ibm_kingston` and verifiable via IBM Quantum dashboard:
+```bash
+pip install qiskit qiskit-aer scipy
+python src/fid_interferometer.py verify          # confirm circuit XOR is fair (no skill channel)
+python src/analyze.py experiments/exp4_pairs_v2/v2_observer_trials.json \
+                      experiments/exp4_pairs_v2/v2_control_trials.json  v2
+```
 
-**Run 1 (April 1):** `d76l13t2b89c73d3j8h0`, `d76l1bs6ji0c738bqudg`, `d76l1dl2b89c73d3j8sg`
-**Run 2 (April 2):** `d77rkqak86tc739uhtgg`, `d77rkv1q1efs73d1130g`, `d77rl1geecps73d6epr0`
-**Branch B:** 20 individual job IDs in `branch_b_artifacts/data/quantum_response.json`
+## IBM job IDs (independently verifiable on IBM Quantum)
 
-## Context
-
-This sits within a broader programme of **ontological engineering** — treating framework axioms as engineering specifications and finding exploits. The FID is the first proposal directly testable with existing equipment. See `docs/ontological-engineering/` for the full framework.
+Run 1 (Apr 1): `d76l13t2b89c73d3j8h0`, `d76l1bs6ji0c738bqudg`, `d76l1dl2b89c73d3j8sg` ·
+Run 2 (Apr 2): `d77rkqak86tc739uhtgg`, `d77rkv1q1efs73d1130g`, `d77rl1geecps73d6epr0` ·
+Branch B: 20 IDs in `experiments/exp2_branch_b/artifacts/data/quantum_response.json`.
 
 ## Author
 
-Sammy Martin, Research Lead at Founders Pledge. MSc AI (Edinburgh), BSc Physics & Philosophy (Durham, First). FID concept and ontological engineering framework developed by Sammy Martin. Experimental code and implementation developed collaboratively with Claude (Anthropic) during March–May 2026.
+Sammy Martin, Research Lead at Founders Pledge. The FID concept and the
+ontological-engineering framework are his; implementation developed with Claude
+(Anthropic), March–May 2026.

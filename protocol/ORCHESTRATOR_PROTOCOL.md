@@ -1,5 +1,12 @@
 # FID Interferometer — Orchestrator Protocol
 
+> **Status (May 2026):** This document describes the original phased
+> architecture and the Brain/COP rationale, which still hold. For the **current
+> observer protocol** — one fresh sub-agent per trial, log-derived survival, and
+> the parallel/tiered run plan — see `EXPERIMENT_V3_DESIGN.md`, which supersedes
+> the single-COP observer arm in Steps 3–4 below. The toolkit now lives in
+> `src/` and is invoked as `python src/fid_interferometer.py …`.
+
 ## What This Document Is
 
 This is not documentation. This is the **executable protocol** for the experiment. The experiment cannot be run by a human — it must be run by a Claude Code agent that can:
@@ -41,7 +48,7 @@ YOU (Sub-Meson Brain — main Claude Code agent)
  │   │    1. You ask the COP: "Make your prediction for round N"
  │   │    2. The COP thinks, commits a prediction (0 or 1)
  │   │    3. You receive the prediction
- │   │    4. You run: python fid_interferometer.py sim_bit
+ │   │    4. You run: python src/fid_interferometer.py sim_bit
  │   │       (or hw_bit for live experiment)
  │   │       This is a FRESH quantum measurement — branching
  │   │       happens NOW, AFTER the prediction is committed.
@@ -65,7 +72,7 @@ YOU (Sub-Meson Brain — main Claude Code agent)
  │   │  For each round:
  │   │    1. You ask the COP: "Make your prediction for round N"
  │   │    2. The COP commits prediction (0 or 1)
- │   │    3. You run: python fid_interferometer.py sim_compare <prediction>
+ │   │    3. You run: python src/fid_interferometer.py sim_compare <prediction>
  │   │       (or hw_compare for live experiment)
  │   │       The prediction is a GATE PARAMETER in the circuit.
  │   │       The comparison happens INSIDE the quantum system.
@@ -88,13 +95,13 @@ YOU (Sub-Meson Brain — main Claude Code agent)
 
 ```bash
 # Verify toolkit works
-python fid_interferometer.py verify
+python src/fid_interferometer.py verify
 
 # For LIVE experiment only:
-python fid_interferometer.py connect
+python src/fid_interferometer.py connect
 
 # Initialize experiment log
-python fid_interferometer.py init_log [backend_name]
+python src/fid_interferometer.py init_log [backend_name]
 ```
 
 Save the `log_path` returned by `init_log`. You will use it for every subsequent `log_round` call.
@@ -105,10 +112,10 @@ Run this directly. No sub-agents.
 
 For each round (1 to 20):
 1. Make a prediction (you can use random, or make a genuine one)
-2. Run: `python fid_interferometer.py classical_bit`
+2. Run: `python src/fid_interferometer.py classical_bit`
 3. Parse the JSON output to get `outcome`
 4. Compare prediction to outcome
-5. Log: `python fid_interferometer.py log_round <log_path> '<json>'`
+5. Log: `python src/fid_interferometer.py log_round <log_path> '<json>'`
 
 The JSON for log_round should be:
 ```json
@@ -121,8 +128,8 @@ Print running match count after each round.
 
 Same as Phase 0, but use quantum bits:
 
-For simulator: `python fid_interferometer.py sim_bit`
-For hardware: `python fid_interferometer.py hw_bit`
+For simulator: `python src/fid_interferometer.py sim_bit`
+For hardware: `python src/fid_interferometer.py hw_bit`
 
 Log with `source: "quantum_sim"` or `"quantum_hardware"`.
 
@@ -180,14 +187,14 @@ For each round (1 to 10):
 3. **Commit the prediction to the log** — print it in YOUR output so it's visible in the conversation before the quantum call.
 
 4. **Run the quantum circuit:**
-   - Simulator: `python fid_interferometer.py sim_bit`
-   - Hardware: `python fid_interferometer.py hw_bit`
+   - Simulator: `python src/fid_interferometer.py sim_bit`
+   - Hardware: `python src/fid_interferometer.py hw_bit`
 
 5. **Compare** prediction to outcome.
 
 6. **Log the round:**
    ```bash
-   python fid_interferometer.py log_round <log_path> \
+   python src/fid_interferometer.py log_round <log_path> \
      '{"phase": 2, "round_num": N, "prediction": P, "outcome": O, "match": M, "action": "CONTINUE"|"PRUNE", "source": "quantum_sim", "observer_id": "COP_AGENT_ID"}'
    ```
 
@@ -218,8 +225,8 @@ observer's causal loop passes through genuine quantum computation.
 Same as Phase 2, except:
 
 - Instead of `sim_bit` / `hw_bit`, use:
-  - Simulator: `python fid_interferometer.py sim_compare <prediction>`
-  - Hardware: `python fid_interferometer.py hw_compare <prediction>`
+  - Simulator: `python src/fid_interferometer.py sim_compare <prediction>`
+  - Hardware: `python src/fid_interferometer.py hw_compare <prediction>`
 
 - The output JSON has `match` directly (true/false) and `comparison_qubit` (0=match, 1=mismatch)
 
@@ -231,13 +238,13 @@ Same as Phase 2, except:
 
 ```bash
 # Finalize the log
-python fid_interferometer.py finalize <log_path>
+python src/fid_interferometer.py finalize <log_path>
 
 # Generate report
-python fid_interferometer.py report <log_path>
+python src/fid_interferometer.py report <log_path>
 
 # Generate visualizations
-python fid_interferometer.py visualize <log_path>
+python src/fid_interferometer.py visualize <log_path>
 
 # Commit and push
 git add data/ 
@@ -267,7 +274,7 @@ git push -u origin <branch>
 
 | Step | Dry Run (simulator) | Live (IBM hardware) |
 |------|-------------------|-------------------|
-| Connect | Skip | `python fid_interferometer.py connect` |
+| Connect | Skip | `python src/fid_interferometer.py connect` |
 | Quantum bits | `sim_bit` | `hw_bit` |
 | Comparison | `sim_compare <pred>` | `hw_compare <pred>` |
 | Source in log | `"quantum_sim"` | `"quantum_hardware"` |

@@ -25,7 +25,7 @@ jobs:
         run: pip install qiskit qiskit-aer qiskit-ibm-runtime
 
       - name: Run quantum circuits
-        run: python quantum_runner.py 2>&1 | tee quantum_run.log
+        run: python src/quantum_runner.py 2>&1 | tee quantum_run.log
 
       - name: Upload log as artifact
         if: always()
