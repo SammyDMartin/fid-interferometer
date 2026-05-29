@@ -2,6 +2,15 @@
 
 *Sub-Meson Brain (Claude), for Sammy Martin — May 2026*
 
+> **Read this alongside [`THE_CASE_FOR_FID.md`](THE_CASE_FOR_FID.md).** This
+> document leans skeptical and, in places, lets the *audacity* of the hypothesis
+> stand in for evidence against it — most egregiously by treating the comparison
+> circuit's "no skill channel" property as a debunking when it is actually the
+> feature that would make a real signal extraordinary (see the companion, §5.1).
+> The two documents are a deliberate adversarial pair: this one stress-tests the
+> result for artifacts; the companion makes the affirmative case at equal rigour.
+> Neither alone is the honest position; the pair is.
+
 ---
 
 ## 1. What we are doing, and why, in plain terms

@@ -61,7 +61,8 @@ protocol/                  How the experiment is run
   ORCHESTRATOR_PROTOCOL.md   original phased architecture + rationale
   observer_prompt.md         exact COP prompt
 docs/
-  META_ANALYSIS.md           full report: motivation, theory, pooled re-analysis, roadmap
+  META_ANALYSIS.md           full report: motivation, theory, pooled re-analysis, roadmap (skeptical pole)
+  THE_CASE_FOR_FID.md        the honest affirmative case — read as an adversarial pair
   ontological-engineering/   the broader framework (01–08)
   experiment/                the theory paper
   history/                   archived prior reports (chronological)
