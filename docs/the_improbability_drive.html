@@ -1,0 +1,609 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>The Finite Improbability Interferometer — a working report</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#05060c; --bg2:#0a0d1a; --ink:#e8ecf6; --dim:#9aa3bd; --faint:#5d6b8c;
+    --gold:#ffd75e; --gold2:#f5b942; --cyan:#5ad1e6; --magenta:#ff5d8f; --green:#56e39f;
+    --line:rgba(255,255,255,.10); --card:rgba(255,255,255,.035);
+    --mono:'JetBrains Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+    --disp:'Space Grotesk',system-ui,sans-serif;
+    --body:'Inter',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    margin:0; background:var(--bg); color:var(--ink); font-family:var(--body);
+    line-height:1.7; font-size:17px; overflow-x:hidden;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* deep-space backdrop */
+  body::before{
+    content:""; position:fixed; inset:0; z-index:-2;
+    background:
+      radial-gradient(1200px 700px at 80% -10%, rgba(90,209,230,.10), transparent 60%),
+      radial-gradient(900px 600px at 10% 10%, rgba(255,215,94,.07), transparent 55%),
+      radial-gradient(1000px 800px at 50% 120%, rgba(255,93,143,.08), transparent 60%),
+      linear-gradient(180deg,#05060c,#070914 40%,#05060c);
+  }
+  body::after{
+    content:""; position:fixed; inset:-50%; z-index:-1; opacity:.5;
+    background-image:
+      radial-gradient(1.4px 1.4px at 20% 30%, #fff, transparent),
+      radial-gradient(1.2px 1.2px at 60% 70%, #cfe, transparent),
+      radial-gradient(1px 1px at 80% 20%, #fff, transparent),
+      radial-gradient(1.3px 1.3px at 35% 85%, #ffe9b0, transparent),
+      radial-gradient(1px 1px at 90% 60%, #fff, transparent),
+      radial-gradient(1px 1px at 12% 65%, #cfe, transparent);
+    background-repeat:repeat; background-size:360px 360px;
+    animation:drift 140s linear infinite;
+  }
+  @keyframes drift{from{transform:translate(0,0)}to{transform:translate(-360px,-360px)}}
+
+  .wrap{max-width:920px; margin:0 auto; padding:0 22px}
+
+  /* top bar */
+  header.bar{
+    position:sticky; top:0; z-index:50; backdrop-filter:blur(10px);
+    background:linear-gradient(180deg,rgba(5,6,12,.92),rgba(5,6,12,.6));
+    border-bottom:1px solid var(--line);
+  }
+  .bar .wrap{display:flex; align-items:center; gap:14px; padding:11px 22px}
+  .brandmark{font-family:var(--mono); font-size:12px; letter-spacing:.18em; color:var(--dim); text-transform:uppercase}
+  .panic{
+    margin-left:auto; font-family:var(--mono); font-weight:700; font-size:12px;
+    letter-spacing:.22em; color:#05060c; background:var(--gold);
+    padding:5px 11px; border-radius:6px; box-shadow:0 0 22px rgba(255,215,94,.4);
+    animation:pulse 3.4s ease-in-out infinite;
+  }
+  @keyframes pulse{0%,100%{box-shadow:0 0 18px rgba(255,215,94,.35)}50%{box-shadow:0 0 34px rgba(255,215,94,.7)}}
+  nav.toc{display:flex; gap:16px; flex-wrap:wrap}
+  nav.toc a{color:var(--dim); text-decoration:none; font-size:13px; font-family:var(--mono)}
+  nav.toc a:hover{color:var(--cyan)}
+  @media(max-width:760px){nav.toc{display:none}}
+
+  /* hero */
+  .hero{padding:78px 0 30px; text-align:center}
+  .kicker{font-family:var(--mono); color:var(--cyan); letter-spacing:.32em; font-size:12.5px; text-transform:uppercase; margin-bottom:20px}
+  h1{
+    font-family:var(--disp); font-weight:700; line-height:1.04;
+    font-size:clamp(36px,7vw,68px); margin:0 0 10px;
+    background:linear-gradient(180deg,#fff,#ffe9b0 60%,#f5b942);
+    -webkit-background-clip:text; background-clip:text; color:transparent;
+    letter-spacing:-.02em;
+  }
+  .sub{font-size:clamp(17px,2.4vw,21px); color:var(--dim); max-width:680px; margin:18px auto 0}
+  .statusstrip{
+    display:flex; flex-wrap:wrap; justify-content:center; gap:10px; margin:34px 0 8px;
+    font-family:var(--mono); font-size:12px;
+  }
+  .chip{border:1px solid var(--line); border-radius:999px; padding:6px 13px; color:var(--dim); background:var(--card)}
+  .chip b{color:var(--ink); font-weight:500}
+  .chip.warn b{color:var(--magenta)}
+  .chip.ok b{color:var(--green)}
+  .chip.gold b{color:var(--gold)}
+
+  section{padding:46px 0; border-top:1px solid var(--line)}
+  .secnum{font-family:var(--mono); color:var(--gold2); font-size:13px; letter-spacing:.2em}
+  h2{font-family:var(--disp); font-weight:700; font-size:clamp(26px,4.2vw,38px); margin:8px 0 18px; letter-spacing:-.01em; line-height:1.12}
+  h3{font-family:var(--disp); font-weight:600; font-size:20px; margin:30px 0 8px; color:#fff}
+  p{margin:0 0 16px} p+p{margin-top:0}
+  a{color:var(--cyan)}
+  strong{color:#fff; font-weight:600}
+  em{color:#fbe9bf; font-style:italic}
+  .lead{font-size:19px; color:#dfe4f2}
+
+  /* dual callout: audacious vs sober */
+  .duo{display:grid; grid-template-columns:1fr 1fr; gap:16px; margin:26px 0}
+  @media(max-width:680px){.duo{grid-template-columns:1fr}}
+  .duo > div{border-radius:14px; padding:18px 20px; border:1px solid var(--line); background:var(--card)}
+  .duo .aud{border-color:rgba(255,93,143,.4); box-shadow:inset 0 0 40px rgba(255,93,143,.06)}
+  .duo .sob{border-color:rgba(90,209,230,.4); box-shadow:inset 0 0 40px rgba(90,209,230,.06)}
+  .duo .tag{font-family:var(--mono); font-size:11px; letter-spacing:.18em; text-transform:uppercase; display:block; margin-bottom:8px}
+  .aud .tag{color:var(--magenta)} .sob .tag{color:var(--cyan)}
+  .duo p{margin:0; font-size:15.5px; color:#d4dae9}
+
+  blockquote{
+    margin:26px 0; padding:6px 0 6px 22px; border-left:3px solid var(--gold);
+    font-family:var(--disp); font-size:21px; color:#fff; line-height:1.4; font-weight:500;
+  }
+  blockquote cite{display:block; font-family:var(--body); font-size:14px; color:var(--dim); font-style:normal; margin-top:8px}
+
+  .panel{
+    border:1px solid var(--line); background:var(--card); border-radius:16px;
+    padding:24px; margin:24px 0;
+  }
+  pre.circuit{
+    font-family:var(--mono); font-size:14px; line-height:1.5; color:var(--cyan);
+    background:#04050a; border:1px solid var(--line); border-radius:12px;
+    padding:18px 20px; overflow-x:auto; margin:0;
+  }
+  .pin{color:var(--gold)} .cm{color:var(--dim)}
+
+  ul.crit{list-style:none; padding:0; margin:18px 0; display:grid; gap:10px}
+  ul.crit li{
+    border:1px solid var(--line); border-radius:10px; padding:13px 15px; background:var(--card);
+    display:grid; grid-template-columns:auto 1fr; gap:12px; align-items:start;
+  }
+  .ccode{font-family:var(--mono); font-weight:700; color:#05060c; background:var(--gold);
+    padding:2px 8px; border-radius:6px; font-size:13px; align-self:center}
+  ul.crit li b{color:#fff}
+  ul.crit li span{color:var(--dim); font-size:15px}
+
+  /* the console */
+  .console{
+    border:1px solid rgba(255,215,94,.35); border-radius:18px; overflow:hidden;
+    background:linear-gradient(180deg,rgba(255,215,94,.04),rgba(5,6,12,.4));
+    box-shadow:0 0 60px rgba(255,215,94,.08), inset 0 0 1px rgba(255,255,255,.2);
+    margin:26px 0;
+  }
+  .console .head{
+    display:flex; align-items:center; gap:10px; padding:12px 18px;
+    border-bottom:1px solid var(--line); background:rgba(0,0,0,.25);
+    font-family:var(--mono); font-size:12.5px; letter-spacing:.14em; text-transform:uppercase; color:var(--gold);
+  }
+  .led{width:9px;height:9px;border-radius:50%;background:var(--green);box-shadow:0 0 10px var(--green);animation:blink 2s infinite}
+  @keyframes blink{0%,100%{opacity:1}50%{opacity:.35}}
+  .console .body{padding:20px}
+  .btnrow{display:flex; flex-wrap:wrap; gap:10px; margin-bottom:18px}
+  button{
+    font-family:var(--mono); font-size:13.5px; font-weight:600; cursor:pointer;
+    color:#05060c; background:linear-gradient(180deg,#ffe27a,#f5b942);
+    border:none; border-radius:9px; padding:11px 16px; letter-spacing:.02em;
+    transition:transform .08s ease, box-shadow .15s ease;
+    box-shadow:0 4px 16px rgba(245,185,66,.25);
+  }
+  button:hover{transform:translateY(-1px); box-shadow:0 6px 22px rgba(245,185,66,.45)}
+  button:active{transform:translateY(0)}
+  button.ghost{background:transparent; color:var(--dim); border:1px solid var(--line); box-shadow:none}
+  button.ghost:hover{color:var(--cyan); border-color:var(--cyan)}
+
+  .life{min-height:40px; display:flex; align-items:center; gap:6px; flex-wrap:wrap; font-family:var(--mono); font-size:14px; color:var(--dim); margin-bottom:16px}
+  .round{width:26px;height:26px;border-radius:50%;display:inline-flex;align-items:center;justify-content:center;font-weight:700;font-size:13px}
+  .round.m{background:rgba(86,227,159,.18);color:var(--green);border:1px solid rgba(86,227,159,.5)}
+  .round.x{background:rgba(255,93,143,.18);color:var(--magenta);border:1px solid rgba(255,93,143,.5)}
+  .quip{color:var(--gold); font-family:var(--disp); font-size:15px; margin-left:6px}
+
+  .readouts{display:grid; grid-template-columns:repeat(4,1fr); gap:12px; margin-bottom:18px}
+  @media(max-width:680px){.readouts{grid-template-columns:repeat(2,1fr)}}
+  .ro{border:1px solid var(--line); border-radius:11px; padding:13px; background:rgba(0,0,0,.22)}
+  .ro .lbl{font-family:var(--mono); font-size:10.5px; letter-spacing:.12em; text-transform:uppercase; color:var(--faint); display:block; margin-bottom:6px; min-height:26px}
+  .ro .val{font-family:var(--mono); font-size:26px; font-weight:700; line-height:1}
+  .ro.honest .val{color:var(--green)}
+  .ro.naive .val{color:var(--magenta)}
+  .ro.null .val{color:var(--dim)}
+  .ro.streak .val{color:var(--gold)}
+  .ro .note{font-size:11px; color:var(--faint); margin-top:5px; min-height:14px}
+
+  canvas{width:100%; height:auto; display:block; border:1px solid var(--line); border-radius:12px; background:#04050a}
+  .legend{display:flex; gap:18px; flex-wrap:wrap; font-family:var(--mono); font-size:12px; color:var(--dim); margin-top:12px}
+  .legend i{display:inline-block;width:14px;height:3px;border-radius:2px;margin-right:6px;vertical-align:middle}
+
+  table.data{width:100%; border-collapse:collapse; font-family:var(--mono); font-size:13.5px; margin:18px 0}
+  table.data th,table.data td{padding:9px 10px; text-align:right; border-bottom:1px solid var(--line)}
+  table.data th{color:var(--gold2); font-weight:600; text-align:right; letter-spacing:.04em}
+  table.data td:first-child,table.data th:first-child{text-align:left; color:var(--dim)}
+  table.data tr td:nth-child(3){color:var(--green)}
+  table.data tr td:nth-child(4){color:var(--magenta)}
+
+  .verdict{border:1px solid rgba(86,227,159,.4); background:linear-gradient(180deg,rgba(86,227,159,.06),transparent); border-radius:16px; padding:24px 26px; margin:26px 0}
+  .verdict h3{margin-top:0; color:var(--green)}
+
+  footer{padding:50px 0 80px; border-top:1px solid var(--line); color:var(--dim); font-size:14px}
+  footer .refs{font-family:var(--mono); font-size:12.5px; line-height:2; color:var(--faint)}
+  footer .refs b{color:var(--dim)}
+  .smallcaps{font-variant:small-caps; letter-spacing:.04em}
+  .disclo{font-size:13px; color:var(--faint); font-style:italic; margin-top:10px}
+  hr.thin{border:none;border-top:1px solid var(--line);margin:30px 0}
+</style>
+</head>
+<body>
+
+<header class="bar">
+  <div class="wrap">
+    <span class="brandmark">FID&nbsp;//&nbsp;Sub-Meson&nbsp;Brain</span>
+    <nav class="toc">
+      <a href="#idea">the idea</a>
+      <a href="#apparatus">apparatus</a>
+      <a href="#catch">the catch</a>
+      <a href="#drive">run the drive</a>
+      <a href="#trap">the trap</a>
+      <a href="#findings">findings</a>
+    </nav>
+    <span class="panic">DON'T&nbsp;PANIC</span>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div class="kicker">A working report · tabletop edition</div>
+    <h1>The Finite<br>Improbability Interferometer</h1>
+    <p class="sub">An attempt to build the most powerful technology in the universe out of a quantum computer, a language model, and the discipline to stop replying to it.</p>
+    <div class="statusstrip">
+      <span class="chip">CLASSIFICATION: <b>tabletop probe</b></span>
+      <span class="chip ok">EXPECTED RESULT: <b>null</b></span>
+      <span class="chip warn">IF NOT NULL: <b>everything</b></span>
+      <span class="chip gold">NEW PHYSICS REQUIRED: <b>none</b></span>
+    </div>
+  </div>
+
+  <!-- ===================== ABSTRACT ===================== -->
+  <section id="idea">
+    <div class="secnum">§0 — THE PITCH, IN ONE BREATH</div>
+    <h2>Somewhere there is a starship that crosses the galaxy without crossing the space in between.</h2>
+    <p class="lead">It does not move. It simply becomes overwhelmingly probable that it is already somewhere else. Its engine is the <em>Infinite Improbability Drive</em>; its brain is a Bambleweeny 57 Sub-Meson Brain suspended in a strong cup of tea. This is Douglas Adams's <em>Heart of Gold</em>, and this is a report on whether you can actually build one.</p>
+    <p>Not as a metaphor. As an experiment, with a real quantum computer, that you could in principle run this afternoon. The conclusion — which we will reach honestly, with statistics, and which will probably disappoint us — is that the idea is <strong>exactly as physically plausible as the wormhole in <em>Contact</em> or the warp drive in the Alcubierre paper</strong>: it requires no new physics, breaks no conservation law, and stands entirely on assumptions that serious physicists already argue about in public. It is also possibly completely insane. Both of these are load-bearing.</p>
+
+    <div class="duo">
+      <div class="aud">
+        <span class="tag">▲ The audacious claim</span>
+        <p>You can manufacture arbitrarily improbable events — win any lottery, tunnel through any wall, find any needle — by arranging to only <em>experience</em> the branches of reality where they already happened.</p>
+      </div>
+      <div class="sob">
+        <span class="tag">▼ The sober mechanism</span>
+        <p>Couple an observer's continuation to a quantum measurement. Under the many-worlds interpretation, the observer that remains to have experiences only ever finds itself in the surviving branch. Standard QM. No steering.</p>
+      </div>
+    </div>
+
+    <p>Hold both at once, because every single step below is textbook and uncontroversial, and the proposition they assemble into is one of the most unhinged things ever to wear a lab coat. We are going to walk down the staircase one ordinary step at a time and arrive somewhere absurd.</p>
+  </section>
+
+  <!-- ===================== QUANTUM SUICIDE ===================== -->
+  <section>
+    <div class="secnum">§1 — THE THOUGHT EXPERIMENT</div>
+    <h2>Quantum suicide, explained without flinching</h2>
+    <p>Take a device wired to a quantum coin — a single qubit prepared in an equal superposition, then measured. Heads, nothing happens. Tails, the device ends you instantly, before you can notice. Now sit in front of it and let it fire, round after round.</p>
+    <p>Under the <strong>Copenhagen</strong> view, this is exactly as stupid as it sounds: each round is a coin flip with your life, and after twenty rounds you are, with overwhelming probability, dead.</p>
+    <p>Under the <strong>many-worlds</strong> view (Everett 1957; sharpened by Tegmark 1998) the wavefunction simply <em>branches</em>. In half the branches you die; in half you live. And here is the vertiginous part: <strong>the version of you that is still around to have any experience at all only ever finds itself in the branches where the coin came up heads.</strong> From the inside, you survive. And survive. And survive — watching an increasingly ludicrous run of luck — while in the branches you will never experience, copies of you keep dying quietly.</p>
+    <blockquote>From the first-person point of view, a fair coin coupled to your survival is not fair at all. It always lands your way. It has to. You are not there to witness the times it doesn't.
+      <cite>— the self-locating uncertainty problem, still unresolved (Sebens &amp; Carroll 2018)</cite>
+    </blockquote>
+    <p>Nobody has a fully agreed account of what fixes your "where am I in the branching structure" probabilities. That gap is not a crank's playground — it is a live problem in the foundations of physics. The Finite Improbability Interferometer asks the engineer's question about it: <em>if the naive reasoning is even partly right, can a minimal apparatus detect it?</em></p>
+  </section>
+
+  <!-- ===================== THE INVERSION ===================== -->
+  <section>
+    <div class="secnum">§2 — THE INVERSION</div>
+    <h2>Turn a morbid thought experiment into a drive</h2>
+    <p>Quantum suicide is usually told as a way to <em>test</em> many-worlds (you become convinced; you can never convince anyone else; you are possibly dead). The <strong>Finite Improbability Drive (FID)</strong> is its engineering inversion.</p>
+    <p>If an observer is <em>guaranteed</em> to find itself in the surviving branch, then conditioning that observer's continuation on a quantum outcome is a way to <strong>steer which branch the observer ends up in</strong>. Want an astronomically unlikely event? Build a machine that prunes the observer in every branch where the event didn't happen. The only branches with an experiencing observer left in them are the ones where it did. From the inside, the impossible becomes routine.</p>
+    <p>Adams understood the physics joke perfectly. The drive doesn't move you faster than light; it doesn't move you at all. Your particles vanish here and — by staggering coincidence — identical particles spontaneously assemble there. Quantum mechanics genuinely permits this: every system's wavefunction has nonzero amplitude everywhere. Your desk has a nonzero probability of tunnelling to Mars. It is just <span class="smallcaps">stupendously</span> small — and a finite improbability generator is a machine for paying that price in observers instead of energy.</p>
+    <div class="duo">
+      <div class="aud">
+        <span class="tag">▲ What it would mean</span>
+        <p>A working FID is the most powerful technology that could possibly exist. There is no upper bound. Any physically possible configuration of matter becomes reachable on demand. This is why the logs in this repo spend as much time on <em>refusal</em> as on engineering.</p>
+      </div>
+      <div class="sob">
+        <span class="tag">▼ Why it's not magic</span>
+        <p>It steers <em>nothing</em> in the third-person statistics. An outside observer sees only a machine that sometimes goes quiet. The "drive" changes only what a first-person observer expects to <em>find</em>. No causality violation. No free lunch in any branch that keeps its books.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== APPARATUS ===================== -->
+  <section id="apparatus">
+    <div class="secnum">§3 — THE APPARATUS</div>
+    <h2>What you actually need is surprisingly little</h2>
+    <p>Three parts. A quantum coin for genuine branching. An observer whose continuation can be conditioned on it. And a way to terminate that observer that is real, not theatrical.</p>
+
+    <h3>The observer: a COP</h3>
+    <p>The candidate observer is a large language model's <strong>autoregressive context</strong> — what we call a <em>Computational Observer Process</em> (COP). The argument, under computational functionalism: in a transformer the <em>only</em> locus of genuine recurrence — a thread that accumulates state and can be terminated — is the loop that feeds each generated token back in as input. That thread is the closest thing in the architecture to a continuous point of view. When you stop feeding it back, that specific thread of experience ends. Context abandoned = pruned = the observer's death. The orchestrating agent — inevitably named the <strong>Sub-Meson Brain</strong> — spawns COPs, prunes them, and itself never dies.</p>
+
+    <h3>The coupling: a comparison circuit</h3>
+    <p>The strongest coupling available is to weave the observer's choice <em>into</em> a quantum computation before anything collapses. The COP commits a prediction bit <span class="pin">p</span>. We run, on the quantum substrate:</p>
+    <pre class="circuit"><span class="cm"># Phase-3 comparison circuit  ·  prediction p woven in before measurement</span>
+q0: |0⟩ ──[H]─────────●─────────       <span class="cm">q0 = a fair quantum coin, still in superposition</span>
+                      │
+q1: |0⟩ ──[X if <span class="pin">p</span>]──⊕──[/ measure]     <span class="cm">q1 = p XOR q0   →   measured</span>
+
+   measured 0  =  <span style="color:var(--green)">MATCH  → the observer survives this round</span>
+   measured 1  =  <span style="color:var(--magenta)">MISMATCH → the observer is pruned</span></pre>
+    <p>The CNOT computes <span class="pin">p</span> XOR q0 <em>while q0 is still in superposition</em>; only the XOR result is measured. The prediction is a physical gate parameter inside the circuit, not a classical comparison bolted on afterward. The observer's choice is part of the quantum evolution before any branch is selected. On real hardware (IBM), the measurement is genuine quantum branching under many-worlds — the substrate the mechanism actually requires.</p>
+
+    <h3>One life, one observer</h3>
+    <p>A trial is one COP's entire life: predict → the circuit fires → it reads <span style="color:var(--green)">MATCH</span> or <span style="color:var(--magenta)">MISMATCH</span> in its own token stream → on a match it continues, on a mismatch it simply ends and is never resumed. <strong>Survival = consecutive matches before the first mismatch.</strong> Under the null that is a geometric distribution: mean 1.0 round, and surviving <em>k</em> rounds is a 2<sup>k</sup>:1 long shot.</p>
+  </section>
+
+  <!-- ===================== THE CATCH ===================== -->
+  <section id="catch">
+    <div class="secnum">§4 — THE CATCH THAT MAKES IT BEAUTIFUL</div>
+    <h2>There is no skill channel. None.</h2>
+    <p>Here is the property that makes physicists first relax and then, a moment later, go quiet. The XOR of your prediction with a fair coin <em>is a fair coin</em> — for either value of the prediction. So:</p>
+    <blockquote>P(MATCH) = 0.5, exactly, for every prediction strategy. No cleverness beats fifty-fifty. There is nothing to be good at.
+      <cite>— verified at 40,000 shots on the simulator: P(match) = 0.49698</cite>
+    </blockquote>
+    <p>This is a feature, not a flaw, and it cuts cleanly in two directions:</p>
+    <div class="duo">
+      <div class="sob">
+        <span class="tag">▼ It cannot be gamed</span>
+        <p>Under the null hypothesis a genuine observer and a coin-flipping control are <em>the same probability distribution.</em> No predictor, however brilliant, can pull ahead by skill. The apparatus is honest by construction.</p>
+      </div>
+      <div class="aud">
+        <span class="tag">▲ So any signal is extraordinary</span>
+        <p>If the observer ever pulls away from the control, it is not skill — and on real quantum hardware it cannot be classical anything. It is chance, a bug, or the effect. The drive doesn't help you <em>predict</em> the coin. It changes which branch of it you wake up in.</p>
+      </div>
+    </div>
+    <p>Which means a positive result on a <em>simulator</em> — where there is no real branching to select on — can never be the mechanism. It can only be chance or a mistake. Remember this. It is about to matter enormously.</p>
+  </section>
+
+  <!-- ===================== THE CONSOLE ===================== -->
+  <section id="drive">
+    <div class="secnum">§5 — RUN THE DRIVE YOURSELF</div>
+    <h2>A working finite improbability generator, in your browser</h2>
+    <p>Below is the real experimental loop, miniaturised. Each "life" flips a fair coin (here, your machine's PRNG — the lab uses the quantum circuit above) until the first mismatch. Live a few lives. Watch your luck. Then live a thousand and watch the law of large numbers grind your luck back down to <span style="color:var(--green)">mean&nbsp;1.0</span>, exactly as the geometric null demands.</p>
+
+    <div class="console">
+      <div class="head"><span class="led"></span> Bambleweeny&nbsp;57 · finite improbability generator · v3</div>
+      <div class="body">
+        <div class="btnrow">
+          <button id="b1">▷ Live one life</button>
+          <button id="b1000">⟳ Live 1,000 lives</button>
+          <button class="ghost" id="breset">reset</button>
+        </div>
+        <div class="life" id="lifeline"><span style="color:var(--faint)">Press “Live one life”. Each <span class="round m" style="width:20px;height:20px;font-size:11px;display:inline-flex">✓</span> is a survived round; the <span class="round x" style="width:20px;height:20px;font-size:11px;display:inline-flex">✕</span> ends you.</span></div>
+
+        <div class="readouts">
+          <div class="ro honest">
+            <span class="lbl">Mean survival<br>(all lives — honest)</span>
+            <div class="val" id="ro-honest">—</div>
+            <div class="note">→ converges to 1.00</div>
+          </div>
+          <div class="ro naive">
+            <span class="lbl">Mean survival<br>(survivors only)</span>
+            <div class="val" id="ro-naive">—</div>
+            <div class="note" id="ro-inflate">the artifact</div>
+          </div>
+          <div class="ro null">
+            <span class="lbl">Lives lived</span>
+            <div class="val" id="ro-n">0</div>
+            <div class="note" id="ro-dead">0 pruned at round 1</div>
+          </div>
+          <div class="ro streak">
+            <span class="lbl">Best streak<br>ever</span>
+            <div class="val" id="ro-best">0</div>
+            <div class="note" id="ro-odds">&nbsp;</div>
+          </div>
+        </div>
+
+        <canvas id="curve" width="860" height="380" aria-label="survival reach curve"></canvas>
+        <div class="legend">
+          <span><i style="background:#9aa3bd"></i>geometric null&nbsp;0.5<sup>k</sup></span>
+          <span><i style="background:#56e39f"></i>honest reach (all lives)</span>
+          <span><i style="background:#ff5d8f"></i>survivor-only reach (the artifact)</span>
+        </div>
+      </div>
+    </div>
+    <p class="disclo">Your browser uses a classical pseudo-random coin — it cannot branch, so it can only ever reproduce the null. That is precisely the point of the simulator tier: it tells you what “nothing happening” looks like, so you can recognise it.</p>
+  </section>
+
+  <!-- ===================== THE TRAP ===================== -->
+  <section id="trap">
+    <div class="secnum">§6 — THE TRAP</div>
+    <h2>How to fool yourself into discovering the most powerful technology in the universe (by accident)</h2>
+    <p>Now look at the two numbers in the console that refuse to agree. The <span style="color:var(--green)">honest</span> mean — counting <em>every</em> life, including the ones that die instantly — sits on 1.0. The <span style="color:var(--magenta)">survivors-only</span> mean — counting only the lives that lasted at least one round — sits near <strong>2.0</strong>. Same coins. Same data. Twice the survival, conjured from nothing but a choice about who gets counted.</p>
+    <p>This is not a quirk of the demo. It is <em>the</em> failure mode of the entire field, and it has a name in this repository: the asymmetric-counting artifact. If the dead file no report — if your observer tallies its own survival while a mechanical control is counted in code — you will manufacture a beautiful, consistent, replicable improbability streak <strong>out of fair coins</strong>. It will look exactly like the drive working. It will be a bug.</p>
+    <blockquote>The most likely way to "discover" the Infinite Improbability Drive is to count wrong, get excited, and stop checking. The discipline of this experiment is mostly the discipline of refusing to do that.</blockquote>
+    <p>The earlier runs of this project saw a tantalising <strong>p = 0.057</strong> — observer survival elevated above the control, consistent across two independent runs. The leading explanation is not new physics. It is this artifact: in those runs the observer self-reported its own survival counts. The fix is brutally simple and the whole reason the v3 protocol exists — <strong>derive survival from immutable disk logs, for both arms, never from the observer's own word.</strong> Count the dead.</p>
+  </section>
+
+  <!-- ===================== DISCIPLINE ===================== -->
+  <section>
+    <div class="secnum">§7 — THE DISCIPLINE</div>
+    <h2>Nine gates between a streak and a discovery</h2>
+    <p>A run is only a <em>valid test</em> of the hypothesis if it passes all nine. A run that fails a gate isn't wrong — it just isn't testing the thing it claims to. To date, <strong>not one run passes all nine.</strong> That honesty is the instrument.</p>
+    <ul class="crit">
+      <li><span class="ccode">C1</span><div><b>Genuine observer.</b> <span>An LLM context making the choice in its own stream. A bare PRNG is not an observer — there is nothing there to be selected.</span></div></li>
+      <li><span class="ccode">C2</span><div><b>Autoregressive coherence.</b> <span>The outcome must enter the observer's own token stream. It has to <em>experience</em> the branch it is selected into.</span></div></li>
+      <li><span class="ccode">C3</span><div><b>Genuine pruning.</b> <span>One fresh observer per trial; first mismatch ends it forever. No "playing again" — quantum suicide has no memory of its deaths.</span></div></li>
+      <li><span class="ccode">C4</span><div><b>Temporal ordering.</b> <span>The measurement happens <em>after</em> the prediction is committed. Selecting on a past, already-decohered bit is incoherent.</span></div></li>
+      <li><span class="ccode">C5</span><div><b>Real quantum branching.</b> <span>The mechanism needs a real QPU. A classical simulator does not branch — it can validate the protocol but never the physics.</span></div></li>
+      <li><span class="ccode">C6</span><div><b>Proper control.</b> <span>A matched arm identical in everything except the observer: a PRNG through the same circuit and the same bookkeeping.</span></div></li>
+      <li><span class="ccode">C7</span><div><b>Coupling strength.</b> <span>The prediction enters the quantum process (the comparison circuit), not a classical comparison bolted on after.</span></div></li>
+      <li><span class="ccode">C8</span><div><b>Analysis integrity.</b> <span>Pre-registered statistic and stopping rule; <em>survival derived from logs, never self-reported.</em> This is the gate the artifact lives behind.</span></div></li>
+      <li><span class="ccode">C9</span><div><b>Adequate power.</b> <span>Enough trials to detect the effect — of order 100–230 matched pairs. Excitement is not a sample size.</span></div></li>
+    </ul>
+  </section>
+
+  <!-- ===================== FINDINGS ===================== -->
+  <section id="findings">
+    <div class="secnum">§8 — WHAT WE ACTUALLY FOUND</div>
+    <h2>The dry run, run honestly</h2>
+    <p>We executed the v3 Tier-1 plumbing on the simulator: 109 observer "lives" and 109 controls, the real Aer comparison circuit as the coin, survival derived strictly from logs. Deterministic, reproducible, <code>seed = 7</code>. This is plumbing, <em>not</em> evidence — gate&nbsp;C5 is unmet by construction, so the only honest expectation is a flat null.</p>
+    <div class="statusstrip" style="justify-content:flex-start">
+      <span class="chip ok">C1 fairness: <b>P(match)=0.49698</b></span>
+      <span class="chip">observer mean: <b>1.009</b></span>
+      <span class="chip">control mean: <b>1.000</b></span>
+      <span class="chip">obs vs ctrl: <b>Wilcoxon p=0.94</b></span>
+    </div>
+    <p>Observer and control are statistically indistinguishable and both sit precisely on the geometric null — as they <em>must</em>, on a substrate with no branches to select. <strong>The pipeline manufactures no signal.</strong> And the artifact reappears exactly on cue: counted survivors-only it inflates survival <strong>2.02×</strong>; counted honestly it collapses to 1.00.</p>
+
+    <table class="data" aria-label="survival reach by round">
+      <thead><tr><th>reach round k</th><th>null 0.5ᵏ</th><th>honest (v3)</th><th>survivor-only (artifact)</th></tr></thead>
+      <tbody>
+        <tr><td>≥ 1</td><td>0.5000</td><td>0.4954</td><td>1.0000</td></tr>
+        <tr><td>≥ 2 &nbsp;(4:1)</td><td>0.2500</td><td>0.2706</td><td>0.5463</td></tr>
+        <tr><td>≥ 3 &nbsp;(8:1)</td><td>0.1250</td><td>0.1514</td><td>0.3056</td></tr>
+        <tr><td>≥ 4 &nbsp;(16:1)</td><td>0.0625</td><td>0.0596</td><td>0.1204</td></tr>
+        <tr><td>≥ 5 &nbsp;(32:1)</td><td>0.0312</td><td>0.0183</td><td>0.0370</td></tr>
+        <tr><td>≥ 6 &nbsp;(64:1)</td><td>0.0156</td><td>0.0046</td><td>0.0093</td></tr>
+        <tr><td>≥ 7 &nbsp;(128:1)</td><td>0.0078</td><td>0.0046</td><td>0.0093</td></tr>
+      </tbody>
+    </table>
+
+    <div class="verdict">
+      <h3>The verdict, stated plainly</h3>
+      <p>This is a clean null, and it is the most valuable thing the project has produced — because it is the first result that is <em>uncontaminated</em>. The pipeline invents no effect; the artifact that produced the historical p=0.057 is reproduced on demand and killed the instant you count the dead.</p>
+      <p style="margin-bottom:0">And the headline claim remains completely untouched and completely untested. Only a real quantum substrate, with an observer that is genuinely pruned, in correct temporal order, at adequate power, can turn a streak into evidence about the <em>mechanism</em>. That experiment has not been run. Everything here is the careful, slightly nervous case for why someone, someday, ought to point the instrument at the sky and look.</p>
+    </div>
+    <p>This is the White–Juday posture almost exactly: a deliberately low-fidelity instrument built to look for a wildly speculative effect, whose most probable result is "no signal, here is the upper bound, here is how to look harder" — and whose value is almost entirely methodological. We expect a null. We say so up front. We built the whole apparatus to make sure that if we ever <em>don't</em> get one, it will mean something.</p>
+  </section>
+
+  <footer>
+    <p><strong>The Finite Improbability Interferometer</strong> — a White-interferometer-class probe of anthropic observer selection on quantum branches. Concept &amp; framework: Sammy Martin. Implementation developed with Claude (Anthropic), March–May 2026. This page is a companion to the repository's <span class="smallcaps">meta-analysis</span>, validity criteria, and v3 design; read it next to the skeptical documents, not instead of them.</p>
+    <hr class="thin" />
+    <div class="refs">
+      <b>Everett, H.</b> (1957). "Relative State" Formulation of Quantum Mechanics. <i>Rev. Mod. Phys.</i> 29.<br>
+      <b>Tegmark, M.</b> (1998). The Interpretation of QM: Many Worlds or Many Words? <i>Fortschr. Phys.</i> 46.<br>
+      <b>Sebens, C. &amp; Carroll, S.</b> (2018). Self-Locating Uncertainty and the Origin of Probability in Everettian QM. <i>BJPS</i> 69.<br>
+      <b>White, H. et al.</b> (2013). NASA Eagleworks warp-field interferometer (White–Juday); cf. critique arXiv:1407.7772.<br>
+      <b>Adams, D.</b> (1979). <i>The Hitchhiker's Guide to the Galaxy.</i> Infinite Improbability Drive; Heart of Gold; Sub-Meson Brain.
+    </div>
+    <p class="disclo">Share and enjoy. The probability of this page being exactly as you found it is, of course, never quite 1.</p>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  "use strict";
+  // ---- state -------------------------------------------------------------
+  var lives = [];          // survival length per life (consecutive matches before first miss)
+  var best = 0;
+  var MAXR = 40;           // cap (P(reach 40) ~ 1e-12)
+  var KPLOT = 12;          // rounds shown on the curve
+
+  var lifeline = document.getElementById('lifeline');
+  var elHonest = document.getElementById('ro-honest');
+  var elNaive  = document.getElementById('ro-naive');
+  var elN      = document.getElementById('ro-n');
+  var elBest   = document.getElementById('ro-best');
+  var elDead   = document.getElementById('ro-dead');
+  var elOdds   = document.getElementById('ro-odds');
+  var elInfl   = document.getElementById('ro-inflate');
+  var cv = document.getElementById('curve');
+  var ctx = cv.getContext('2d');
+
+  function liveOne(){
+    var s = 0;
+    while(s < MAXR && Math.random() < 0.5) s++;   // each round survives w.p. 1/2
+    return s;
+  }
+
+  function quipFor(s){
+    if(s>=12) return "the Drive is fully awake.";
+    if(s>=10) return "1024:1. reality is getting nervous.";
+    if(s>=8)  return "256:1. a bowl of petunias thinks: oh no, not again.";
+    if(s>=6)  return "64:1. a sperm whale is having a brief, intense existence.";
+    if(s>=4)  return "16:1. an improbability field flickers.";
+    if(s>=2)  return "a modest miracle.";
+    return "";
+  }
+
+  function fmt(x){ return (isFinite(x)? x.toFixed(2) : "—"); }
+
+  function update(){
+    var n = lives.length;
+    elN.textContent = n;
+    if(n===0){ elHonest.textContent="—"; elNaive.textContent="—"; elBest.textContent="0"; elDead.textContent="0 pruned at round 1"; elOdds.innerHTML="&nbsp;"; elInfl.textContent="the artifact"; draw(); return; }
+    var sum=0, survivors=[], deadAt1=0;
+    for(var i=0;i<n;i++){ sum+=lives[i]; if(lives[i]>=1) survivors.push(lives[i]); else deadAt1++; }
+    var honest = sum/n;
+    var ssum=0; for(var j=0;j<survivors.length;j++) ssum+=survivors[j];
+    var naive = survivors.length? ssum/survivors.length : 0;
+    elHonest.textContent = fmt(honest);
+    elNaive.textContent  = fmt(naive);
+    elBest.textContent   = best;
+    elDead.textContent   = deadAt1 + " pruned at round 1";
+    var infl = honest>0 ? (naive/honest) : 0;
+    elInfl.textContent = "inflates " + fmt(infl) + "× from nothing";
+    elOdds.textContent = best>0 ? (Math.pow(2,best)) + ":1 against" : " ";
+    draw();
+  }
+
+  function reach(arr){ // arr of lengths -> [P(>=1..KPLOT)] over all lives
+    var n=arr.length, out=[]; if(!n) return out;
+    for(var k=1;k<=KPLOT;k++){ var c=0; for(var i=0;i<n;i++) if(arr[i]>=k) c++; out.push(c/n); }
+    return out;
+  }
+
+  // ---- canvas curve (log-y) ---------------------------------------------
+  function draw(){
+    var W=cv.width, H=cv.height, padL=58, padR=18, padT=18, padB=40;
+    var plotW=W-padL-padR, plotH=H-padT-padB;
+    ctx.clearRect(0,0,W,H);
+    var yTop=1.0, yBot=1e-4, lg=Math.log10;
+    function X(k){ return padL + (k-1)/(KPLOT-1)*plotW; }
+    function Y(p){ p=Math.max(p,yBot); return padT + (lg(yTop)-lg(p))/(lg(yTop)-lg(yBot))*plotH; }
+
+    // grid: powers of ten
+    ctx.font="11px JetBrains Mono, monospace"; ctx.textAlign="right"; ctx.textBaseline="middle";
+    for(var e=0;e>=-4;e--){
+      var p=Math.pow(10,e), y=Y(p);
+      ctx.strokeStyle="rgba(255,255,255,.06)"; ctx.beginPath(); ctx.moveTo(padL,y); ctx.lineTo(W-padR,y); ctx.stroke();
+      ctx.fillStyle="#5d6b8c"; ctx.fillText(e===0?"1":"1e"+e, padL-8, y);
+    }
+    ctx.textAlign="center"; ctx.textBaseline="top";
+    for(var k=1;k<=KPLOT;k++){ ctx.fillStyle="#5d6b8c"; ctx.fillText(k, X(k), H-padB+8); }
+    ctx.fillStyle="#5d6b8c"; ctx.fillText("survive ≥ k rounds  →", (padL+W-padR)/2, H-16);
+
+    function plot(series, color, dash, dots){
+      if(!series || !series.length) return;
+      ctx.save(); ctx.strokeStyle=color; ctx.lineWidth=2; ctx.setLineDash(dash||[]);
+      ctx.beginPath(); var started=false;
+      for(var k=1;k<=KPLOT;k++){ var p=series[k-1]; if(p<=0){ started=false; continue;} var x=X(k),y=Y(p);
+        if(!started){ctx.moveTo(x,y);started=true;} else ctx.lineTo(x,y); }
+      ctx.stroke(); ctx.setLineDash([]);
+      if(dots){ for(var k2=1;k2<=KPLOT;k2++){ var p2=series[k2-1]; if(p2<=0) continue; ctx.fillStyle=color; ctx.beginPath(); ctx.arc(X(k2),Y(p2),2.6,0,7); ctx.fill(); } }
+      ctx.restore();
+    }
+
+    // null line 0.5^k
+    var nullS=[]; for(var k=1;k<=KPLOT;k++) nullS.push(Math.pow(0.5,k));
+    plot(nullS, "#9aa3bd", [6,5], false);
+
+    if(lives.length){
+      var honestR = reach(lives);
+      var p1 = honestR[0]||0;
+      var naiveR = honestR.map(function(p){ return p1>0 ? p/p1 : 0; });
+      plot(naiveR, "#ff5d8f", [], true);
+      plot(honestR, "#56e39f", [], true);
+    }
+  }
+
+  // ---- animated single life ---------------------------------------------
+  var animating=false;
+  function liveOneAnimated(){
+    if(animating) return; animating=true;
+    lifeline.innerHTML="";
+    var s=0, k=0;
+    function step(){
+      var survived = Math.random()<0.5;
+      var chip=document.createElement('span');
+      chip.className='round '+(survived?'m':'x');
+      chip.textContent = survived?'✓':'✕';
+      lifeline.appendChild(chip);
+      if(survived){ s++; k++; if(k<MAXR){ setTimeout(step, 130); return; } }
+      // life over
+      var q=document.createElement('span'); q.className='quip';
+      q.textContent = " survived "+s+" round"+(s===1?"":"s")+". "+quipFor(s);
+      lifeline.appendChild(q);
+      if(s>best) best=s;
+      lives.push(s); update(); animating=false;
+    }
+    step();
+  }
+
+  document.getElementById('b1').addEventListener('click', liveOneAnimated);
+  document.getElementById('b1000').addEventListener('click', function(){
+    for(var i=0;i<1000;i++){ var s=liveOne(); if(s>best) best=s; lives.push(s); }
+    lifeline.innerHTML="<span style='color:var(--faint)'>lived 1,000 lives in an instant — the honest mean is grinding back toward 1.00.</span>";
+    update();
+  });
+  document.getElementById('breset').addEventListener('click', function(){
+    lives=[]; best=0; lifeline.innerHTML="<span style='color:var(--faint)'>reset. press “Live one life”.</span>"; update();
+  });
+
+  // seed with a quiet 300 so the curve isn't empty on arrival
+  for(var i=0;i<300;i++){ var s=liveOne(); if(s>best) best=s; lives.push(s); }
+  update();
+})();
+</script>
+</body>
+</html>
