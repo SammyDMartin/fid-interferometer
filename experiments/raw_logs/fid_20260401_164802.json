@@ -1,0 +1,89 @@
+{
+  "metadata": {
+    "experiment_id": "fid_20260401_164802",
+    "start_time": "2026-04-01T16:48:02.662307+00:00",
+    "end_time": "2026-04-01T16:48:07.578194+00:00",
+    "backend": "simulator",
+    "version": "2.0",
+    "architecture": "sub-meson-brain + COP sub-agents",
+    "total_rounds": 6
+  },
+  "rounds": [
+    {
+      "phase": 2,
+      "round": 1,
+      "prediction": 0,
+      "outcome": 0,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:48:03.423116+00:00",
+      "observer_id": "cop_p2_trial5"
+    },
+    {
+      "phase": 2,
+      "round": 2,
+      "prediction": 0,
+      "outcome": 1,
+      "match": false,
+      "action": "PRUNE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:48:04.171096+00:00",
+      "observer_id": "cop_p2_trial5"
+    },
+    {
+      "phase": 3,
+      "round": 1,
+      "prediction": 1,
+      "outcome": null,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:48:04.930245+00:00",
+      "observer_id": "cop_p3_trial5",
+      "comparison_qubit": 0
+    },
+    {
+      "phase": 3,
+      "round": 2,
+      "prediction": 0,
+      "outcome": null,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:48:05.703755+00:00",
+      "observer_id": "cop_p3_trial5",
+      "comparison_qubit": 0
+    },
+    {
+      "phase": 3,
+      "round": 3,
+      "prediction": 1,
+      "outcome": null,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:48:06.454151+00:00",
+      "observer_id": "cop_p3_trial5",
+      "comparison_qubit": 0
+    },
+    {
+      "phase": 3,
+      "round": 4,
+      "prediction": 0,
+      "outcome": null,
+      "match": false,
+      "action": "PRUNE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:48:07.197479+00:00",
+      "observer_id": "cop_p3_trial5",
+      "comparison_qubit": 1
+    }
+  ]
+}

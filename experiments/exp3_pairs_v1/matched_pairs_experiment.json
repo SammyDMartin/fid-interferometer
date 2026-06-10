@@ -1,0 +1,45 @@
+{
+  "experiment": "matched_pairs_observer_vs_control",
+  "date": "2026-04-03",
+  "protocol": "Thick COP v3, Phase 3 comparison circuit, Aer simulator",
+  "n_pairs": 20,
+  "n_total_trials": 40,
+  "observer": "Real Claude COP sub-agent making genuine predictions in autoregressive stream",
+  "control": "random.randint(0,1) — no observer",
+  "matching": "interleaved (observer then control for each pair)",
+  "pairs": [
+    {"pair":1,"observer":0,"control":2},{"pair":2,"observer":0,"control":0},
+    {"pair":3,"observer":1,"control":1},{"pair":4,"observer":0,"control":0},
+    {"pair":5,"observer":0,"control":0},{"pair":6,"observer":4,"control":2},
+    {"pair":7,"observer":1,"control":3},{"pair":8,"observer":0,"control":1},
+    {"pair":9,"observer":4,"control":1},{"pair":10,"observer":4,"control":2},
+    {"pair":11,"observer":0,"control":0},{"pair":12,"observer":1,"control":0},
+    {"pair":13,"observer":2,"control":1},{"pair":14,"observer":0,"control":2},
+    {"pair":15,"observer":0,"control":5},{"pair":16,"observer":1,"control":1},
+    {"pair":17,"observer":0,"control":1},{"pair":18,"observer":1,"control":5},
+    {"pair":19,"observer":8,"control":0},{"pair":20,"observer":2,"control":0}
+  ],
+  "results": {
+    "observer_mean": 1.45,
+    "control_mean": 1.35,
+    "difference": 0.10,
+    "observer_total": 29,
+    "control_total": 27,
+    "observer_max": 8,
+    "control_max": 5,
+    "paired_t_test_p": 0.872,
+    "wilcoxon_p": 1.000,
+    "sign_test": {"observer_wins": 7, "control_wins": 7, "ties": 6, "p": 1.000},
+    "cohens_d": 0.037,
+    "observer_vs_null_z": 1.423,
+    "observer_vs_null_p": 0.077,
+    "control_vs_null_z": 1.107,
+    "control_vs_null_p": 0.134
+  },
+  "improbability_factors": {
+    "max_observer": "2^8 = 256:1",
+    "max_control": "2^5 = 32:1",
+    "effective_range_tested": "2^1 through 2^8"
+  },
+  "verdict": "No detectable difference between observer and control at this improbability level"
+}

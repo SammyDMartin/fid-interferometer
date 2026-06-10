@@ -1,0 +1,25 @@
+{
+  "metadata": {
+    "experiment_id": "fid_20260403_125136",
+    "start_time": "2026-04-03T12:51:36.396568+00:00",
+    "end_time": null,
+    "backend": "thick_cop_t8",
+    "version": "2.0",
+    "architecture": "sub-meson-brain + COP sub-agents"
+  },
+  "rounds": [
+    {
+      "phase": 3,
+      "round": 1,
+      "prediction": 0,
+      "outcome": null,
+      "match": false,
+      "action": "PRUNE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-03T12:51:52.567892+00:00",
+      "observer_id": "thick_cop_t8",
+      "comparison_qubit": 1
+    }
+  ]
+}

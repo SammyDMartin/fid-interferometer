@@ -1,0 +1,36 @@
+{
+  "metadata": {
+    "experiment_id": "fid_20260403_124618",
+    "start_time": "2026-04-03T12:46:18.201108+00:00",
+    "end_time": null,
+    "backend": "thick_cop_test",
+    "version": "2.0",
+    "architecture": "sub-meson-brain + COP sub-agents"
+  },
+  "rounds": [
+    {
+      "phase": 2,
+      "round": 1,
+      "prediction": 1,
+      "outcome": 1,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-03T12:46:34.627858+00:00",
+      "observer_id": "thick_cop_p2"
+    },
+    {
+      "phase": 2,
+      "round": 2,
+      "prediction": 0,
+      "outcome": 1,
+      "match": false,
+      "action": "PRUNE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-03T12:46:46.665711+00:00",
+      "observer_id": "thick_cop_p2"
+    }
+  ]
+}

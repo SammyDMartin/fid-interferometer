@@ -1,0 +1,149 @@
+{
+  "metadata": {
+    "experiment_id": "fid_20260401_164940",
+    "start_time": "2026-04-01T16:49:40.178914+00:00",
+    "end_time": "2026-04-01T16:49:49.440156+00:00",
+    "backend": "simulator",
+    "version": "2.0",
+    "architecture": "sub-meson-brain + COP sub-agents",
+    "total_rounds": 11
+  },
+  "rounds": [
+    {
+      "phase": 2,
+      "round": 1,
+      "prediction": 1,
+      "outcome": 1,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:40.955719+00:00",
+      "observer_id": "cop_p2_trial30"
+    },
+    {
+      "phase": 2,
+      "round": 2,
+      "prediction": 0,
+      "outcome": 0,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:41.818640+00:00",
+      "observer_id": "cop_p2_trial30"
+    },
+    {
+      "phase": 2,
+      "round": 3,
+      "prediction": 0,
+      "outcome": 0,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:42.652748+00:00",
+      "observer_id": "cop_p2_trial30"
+    },
+    {
+      "phase": 2,
+      "round": 4,
+      "prediction": 1,
+      "outcome": 1,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:43.426323+00:00",
+      "observer_id": "cop_p2_trial30"
+    },
+    {
+      "phase": 2,
+      "round": 5,
+      "prediction": 0,
+      "outcome": 0,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:44.229213+00:00",
+      "observer_id": "cop_p2_trial30"
+    },
+    {
+      "phase": 2,
+      "round": 6,
+      "prediction": 0,
+      "outcome": 0,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:45.015700+00:00",
+      "observer_id": "cop_p2_trial30"
+    },
+    {
+      "phase": 2,
+      "round": 7,
+      "prediction": 0,
+      "outcome": 1,
+      "match": false,
+      "action": "PRUNE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:45.833972+00:00",
+      "observer_id": "cop_p2_trial30"
+    },
+    {
+      "phase": 3,
+      "round": 1,
+      "prediction": 0,
+      "outcome": null,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:46.630049+00:00",
+      "observer_id": "cop_p3_trial30",
+      "comparison_qubit": 0
+    },
+    {
+      "phase": 3,
+      "round": 2,
+      "prediction": 1,
+      "outcome": null,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:47.389107+00:00",
+      "observer_id": "cop_p3_trial30",
+      "comparison_qubit": 0
+    },
+    {
+      "phase": 3,
+      "round": 3,
+      "prediction": 0,
+      "outcome": null,
+      "match": true,
+      "action": "CONTINUE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:48.255267+00:00",
+      "observer_id": "cop_p3_trial30",
+      "comparison_qubit": 0
+    },
+    {
+      "phase": 3,
+      "round": 4,
+      "prediction": 0,
+      "outcome": null,
+      "match": false,
+      "action": "PRUNE",
+      "job_id": null,
+      "source": "quantum_sim",
+      "timestamp": "2026-04-01T16:49:49.042571+00:00",
+      "observer_id": "cop_p3_trial30",
+      "comparison_qubit": 1
+    }
+  ]
+}

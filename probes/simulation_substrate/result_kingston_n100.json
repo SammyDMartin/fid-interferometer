@@ -1,0 +1,45 @@
+{
+  "label": "ibm_kingston_n100",
+  "n_bits": 100,
+  "power_note": "UNDERPOWERED \u2014 like White's interferometer. Subtle structure needs >>1e6 bits; the free QPU tier gives ~1e4-1e5. A null here is uninformative; only a strong, replicated positive matters.",
+  "tests": [
+    {
+      "test": "monobit",
+      "ones": 53,
+      "n": 100,
+      "ones_frac": 0.53,
+      "z": 0.6,
+      "p": 0.5485
+    },
+    {
+      "test": "runs",
+      "runs": 60,
+      "p": 0.041
+    },
+    {
+      "test": "block_entropy",
+      "skipped": "too few bits"
+    },
+    {
+      "test": "block_entropy",
+      "skipped": "too few bits"
+    },
+    {
+      "test": "compressibility",
+      "skipped": "too few bytes"
+    },
+    {
+      "test": "lag_scan",
+      "lags_scanned": 25,
+      "strongest_lag": 1,
+      "corr": -0.1919,
+      "z": 1.91,
+      "p": 0.7644,
+      "note": "p is family-wise corrected for the lag scan; a spike at some lag (esp. a period) \u21d2 a repeating generator"
+    }
+  ],
+  "min_p_uncorrected": 0.041,
+  "n_tests_with_p": 3,
+  "p_familywise": 0.118,
+  "verdict": "NULL (consistent with irreducible quantum randomness). No substrate signature at n=100 (family-wise p=0.118). Expected."
+}
