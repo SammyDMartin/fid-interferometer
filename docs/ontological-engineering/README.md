@@ -19,3 +19,9 @@ These documents define the ontological engineering framework. They were produced
 7. **07_IDEATION_PROTOCOL.md** — Instructions for AI systems attempting to generate proposals. Includes the acid test, the Gödel test, and phase-by-phase approach.
 
 8. **08_ORIGIN_CONVERSATION.md** — Summary of the March 29, 2026 conversation where ontological engineering was named and systematized. Records key developments: the Omni-Experiment, the unitarity wedge, the extended TRL scale, the meta-proposal, the AI acceleration corollary, Claude's failed Gödel attempt, and the campfire phenomenology.
+
+## Applied: from proposals to runnable demos
+
+9. **CODEABILITY_AUDIT.md** — Which proposals admit a White-interferometer-class *executable* demo (the mechanism genuinely operates in code, not a depiction). Ruthless audit of all eight against a strict bar. Result: only two pass — the FID (already built) and the simulation-substrate probe. The rest are rejected with reasons (physical substrate, no observable, or demonstrate-the-failure-only).
+
+10. The passing demo is built in **`../../probes/simulation_substrate/`** — a real, weak, honestly-underpowered test for algorithmic structure in genuine quantum randomness (a simulation-substrate signature), with a fully characterized apparatus.
